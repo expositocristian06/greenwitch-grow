@@ -1,0 +1,10 @@
+{
+  "name": "greenwitch-grow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sitio Green Witch Grow con pasarela de pago Mercado Pago (Checkout Pro)",
+  "dependencies": {
+    "mercadopago": "^2.0.9"
+  }
+}
