@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Green Witch Grow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1a0d;
+      --surface: #142214;
+      --surface2: #1a2e1a;
+      --border: #2a4a2a;
+      --green: #4ade80;
+      --green-dark: #16a34a;
+      --red: #ef4444;
+      --text: #e8f5e8;
+      --text-dim: #8aab8a;
+      --white: #fff;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--green);
+    }
+    header h1 span { color: var(--text-dim); font-weight: 400; }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--green-dark);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--green); color: var(--bg); }
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red);
+    }
+    .btn-danger:hover { background: var(--red); color: var(--white); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* Stats bar */
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      flex: 1;
+      min-width: 120px;
+    }
+    .stat-card .label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .stat-card .value { font-size: 1.5rem; font-weight: 700; }
+
+    /* Products grid */
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .products-header h2 { font-size: 1rem; font-weight: 600; }
+    .search-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      width: 220px;
+    }
+    .search-box::placeholder { color: var(--text-dim); }
+    .search-box:focus { outline: none; border-color: var(--green); }
+
+    .products-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .products-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .products-table td {
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .products-table tr:last-child td { border-bottom: none; }
+    .products-table tr:hover td { background: rgba(74,222,128,0.03); }
+
+    .product-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--surface2);
+    }
+    .product-name-cell { font-weight: 500; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge-active { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge-inactive { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge-cat {
+      background: rgba(74,222,128,0.1);
+      color: var(--green);
+      font-weight: 400;
+    }
+    .actions-cell {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* Panel lateral */
+    .panel-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: none;
+    }
+    .panel-overlay.open { display: block; }
+    .panel {
+      position: fixed;
+      top: 0;
+      right: -460px;
+      width: 440px;
+      max-width: 100vw;
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 201;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel.open { right: 0; }
+    .panel-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-header h3 { font-size: 1rem; font-weight: 600; }
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+    }
+    .panel-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .img-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      background: var(--bg);
+      display: none;
+    }
+    .img-preview.show { display: block; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 0.75rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 300;
+    }
+    .toast.error { background: var(--red); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-dim);
+    }
+    .loading { text-align: center; padding: 2rem; color: var(--text-dim); }
+
+    @media (max-width: 700px) {
+      .products-table { font-size: 0.8rem; }
+      .panel { width: 100vw; }
+      .form-row { grid-template-columns: 1fr; }
+      .stats { flex-direction: column; }
+      .products-header { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+      .search-box { width: 100%; }
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌿 Green Witch Grow <span>· Panel Admin</span></h1>
+  <button class="btn btn-primary" onclick="openPanel()">+ Nuevo producto</button>
+</header>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">Total productos</div>
+      <div class="value" id="statTotal">–</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Activos</div>
+      <div class="value" id="statActive">–</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Categorías</div>
+      <div class="value" id="statCats">–</div>
+    </div>
+  </div>
+
+  <div class="products-header">
+    <h2>Productos</h2>
+    <input type="text" class="search-box" placeholder="Buscar producto..." oninput="filterProducts(this.value)">
+  </div>
+
+  <div id="tableContainer">
+    <div class="loading">Cargando productos...</div>
+  </div>
+</div>
+
+<!-- Panel lateral -->
+<div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-header">
+    <h3 id="panelTitle">Nuevo producto</h3>
+    <button class="btn btn-ghost btn-sm" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body">
+    <form id="productForm" onsubmit="return false;">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" id="fName" required placeholder="Ej: Pipa Vidrio Soplado">
+      </div>
+      <div class="form-group">
+        <label>Categoría *</label>
+        <select id="fCategory" required>
+          <option value="">Seleccionar...</option>
+          <option value="Parafernalia">Parafernalia</option>
+          <option value="Insumos">Insumos</option>
+          <option value="Kits">Kits</option>
+          <option value="Cultivo">Cultivo</option>
+          <option value="Cultivo">Cultivo</option>
+          <option value="Consultoría">Consultoría</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio *</label>
+          <input type="number" id="fPrice" required placeholder="15000" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="fStock" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="fDesc" placeholder="Descripción del producto..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Emoji (icono)</label>
+          <input type="text" id="fEmoji" placeholder="🌿" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>Precio original (tachado)</label>
+          <input type="number" id="fOrigPrice" placeholder="Opcional" min="0" step="1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Etiqueta / Badge</label>
+          <input type="text" id="fTag" placeholder="Ej: 16% OFF">
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:0.6rem">
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+            <input type="checkbox" id="fUnico"> Pieza única
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>URL de imagen</label>
+        <input type="url" id="fImg" placeholder="https://..." oninput="previewImg(this.value)">
+        <img class="img-preview" id="imgPreview" alt="Preview">
+      </div>
+    </form>
+  </div>
+  <div class="panel-footer">
+    <button class="btn btn-ghost" onclick="closePanel()">Cancelar</button>
+    <button class="btn btn-primary" id="saveBtn" onclick="saveProduct()">Guardar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== SUPABASE CONFIG =====
+  const SUPABASE_URL = 'https://vsltrtouczsfexynzfhr.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbHRydG91Y3pzZmV4eW56ZmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA4NjMsImV4cCI6MjEwNDU0Njg2M30.5kgfDii0YRBJMYGhR6ZopWQXv_XyFdOT0Z1BfhFTTfs';
+  const API = `${SUPABASE_URL}/rest/v1/products`;
+  const HEADERS = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+  };
+
+  let allProducts = [];
+
+  // ===== FETCH PRODUCTS =====
+  async function loadProducts() {
+    try {
+      const res = await fetch(`${API}?select=*&order=created_at.desc`, { headers: HEADERS });
+      if (!res.ok) throw new Error('Error cargando productos');
+      allProducts = await res.json();
+      renderTable(allProducts);
+      updateStats();
+    } catch (e) {
+      document.getElementById('tableContainer').innerHTML =
+        `<div class="empty-state">Error al cargar: ${e.message}</div>`;
+      showToast(e.message, true);
+    }
+  }
+
+  // ===== RENDER TABLE =====
+  function renderTable(products) {
+    if (products.length === 0) {
+      document.getElementById('tableContainer').innerHTML =
+        '<div class="empty-state">No hay productos todavía.<br>Hacé click en "+ Nuevo producto" para agregar uno.</div>';
+      return;
+    }
+    const rows = products.map(p => `
+      <tr>
+        <td>${p.img ? `<img class="product-thumb" src="${p.img}" onerror="this.style.display='none'">` : '<div class="product-thumb"></div>'}</td>
+        <td class="product-name-cell">${esc(p.name)}</td>
+        <td><span class="badge badge-cat">${esc(p.category)}</span></td>
+        <td>$${Number(p.price).toLocaleString('es-AR')}</td>
+        <td>${p.stock ?? 0}</td>
+        <td><span class="badge ${p.active ? 'badge-active' : 'badge-inactive'}">${p.active ? 'Activo' : 'Inactivo'}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">Editar</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleActive('${p.id}', ${p.active})">${p.active ? 'Desactivar' : 'Activar'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}', '${esc(p.name)}')">Borrar</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    document.getElementById('tableContainer').innerHTML = `
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = allProducts.length;
+    document.getElementById('statActive').textContent = allProducts.filter(p => p.active).length;
+    const cats = new Set(allProducts.map(p => p.category));
+    document.getElementById('statCats').textContent = cats.size;
+  }
+
+  function filterProducts(query) {
+    const q = query.toLowerCase();
+    const filtered = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  }
+
+  // ===== PANEL =====
+  function openPanel(product = null) {
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('panel').classList.add('open');
+    if (product) {
+      document.getElementById('panelTitle').textContent = 'Editar producto';
+      document.getElementById('editId').value = product.id;
+      document.getElementById('fName').value = product.name;
+      document.getElementById('fCategory').value = product.category;
+      document.getElementById('fPrice').value = product.price;
+      document.getElementById('fStock').value = product.stock ?? 0;
+      document.getElementById('fDesc').value = product.description ?? '';
+      document.getElementById('fEmoji').value = product.emoji ?? '';
+      document.getElementById('fOrigPrice').value = product.original_price ?? '';
+      document.getElementById('fTag').value = product.tag ?? '';
+      document.getElementById('fUnico').checked = product.unico ?? false;
+      document.getElementById('fImg').value = product.img ?? '';
+      previewImg(product.img);
+    } else {
+      document.getElementById('panelTitle').textContent = 'Nuevo producto';
+      document.getElementById('editId').value = '';
+      document.getElementById('productForm').reset();
+      document.getElementById('imgPreview').classList.remove('show');
+    }
+  }
+
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('panel').classList.remove('open');
+  }
+
+  function previewImg(url) {
+    const img = document.getElementById('imgPreview');
+    if (url && url.startsWith('http')) {
+      img.src = url;
+      img.classList.add('show');
+      img.onerror = () => img.classList.remove('show');
+    } else {
+      img.classList.remove('show');
+    }
+  }
+
+  // ===== SAVE =====
+  async function saveProduct() {
+    const name = document.getElementById('fName').value.trim();
+    const category = document.getElementById('fCategory').value;
+    const price = document.getElementById('fPrice').value;
+    if (!name || !category || !price) {
+      showToast('Completá nombre, categoría y precio', true);
+      return;
+    }
+    const data = {
+      name,
+      category,
+      price: Number(price),
+      stock: Number(document.getElementById('fStock').value) || 0,
+      description: document.getElementById('fDesc').value.trim() || null,
+      emoji: document.getElementById('fEmoji').value.trim() || null,
+      original_price: Number(document.getElementById('fOrigPrice').value) || null,
+      tag: document.getElementById('fTag').value.trim() || null,
+      unico: document.getElementById('fUnico').checked,
+      img: document.getElementById('fImg').value.trim() || null,
+    };
+    const editId = document.getElementById('editId').value;
+    try {
+      document.getElementById('saveBtn').textContent = 'Guardando...';
+      let res;
+      if (editId) {
+        res = await fetch(`${API}?id=eq.${editId}`, {
+          method: 'PATCH', headers: HEADERS, body: JSON.stringify(data)
+        });
+      } else {
+        res = await fetch(API, {
+          method: 'POST', headers: HEADERS, body: JSON.stringify(data)
+        });
+      }
+      if (!res.ok) throw new Error('Error al guardar');
+      showToast(editId ? 'Producto actualizado' : 'Producto creado');
+      closePanel();
+      loadProducts();
+    } catch (e) {
+      showToast(e.message, true);
+    } finally {
+      document.getElementById('saveBtn').textContent = 'Guardar';
+    }
+  }
+
+  // ===== TOGGLE ACTIVE =====
+  async function toggleActive(id, currentState) {
+    try {
+      const res = await fetch(`${API}?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: HEADERS,
+        body: JSON.stringify({ active: !currentState })
+      });
+      if (!res.ok) throw new Error('Error');
+      showToast(currentState ? 'Producto desactivado' : 'Producto activado');
+      loadProducts();
+    } catch (e) {
+      showToast(e.message, true);
+    }
+  }
+
+  // ===== DELETE =====
+  async function deleteProduct(id, name) {
+    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      const res = await fetch(`${API}?id=eq.${id}`, {
+        method: 'DELETE', headers: HEADERS
+      });
+      if (!res.ok) throw new Error('Error al eliminar');
+      showToast('Producto eliminado');
+      loadProducts();
+    } catch (e) {
+      showToast(e.message, true);
+    }
+  }
+
+  // ===== EDIT =====
+  function editProduct(id) {
+    const product = allProducts.find(p => p.id === id);
+    if (product) openPanel(product);
+  }
+
+  // ===== TOAST =====
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast show${isError ? ' error' : ''}`;
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // ===== ESCAPE HTML =====
+  function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ===== INIT =====
+  loadProducts();
+</script>
+</body>
+</html>

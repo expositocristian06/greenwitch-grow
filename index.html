@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Witch Grow · Tienda Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --negro:#0D0D0D;
+  --verde-oscuro:#1A2E1A;
+  --verde:#2D5A27;
+  --verde-claro:#52A647;
+  --verde-neon:#7EC850;
+  --crema:#F0EBD8;
+  --crema-oscuro:#D9D0B8;
+  --dorado:#C8A84B;
+  --texto:#E8E0CC;
+  --texto-muted:#8A8A7A;
+  --borde:#2A3A2A;
+  --white:#FFFFFF;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);overflow-x:hidden}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(13,13,13,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--borde);
+  padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;
+  color:var(--verde-neon);letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem;
+}
+.nav-logo span{font-size:0.55rem;color:var(--texto-muted);font-family:'Inter',sans-serif;font-weight:300;letter-spacing:4px;text-transform:uppercase;display:block;margin-top:2px}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;color:var(--texto-muted);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--verde-neon)}
+.nav-links a.hot{color:var(--dorado)}
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;font-size:1.2rem;padding:0.5rem;color:var(--texto)}
+.cart-count{position:absolute;top:-2px;right:-4px;background:var(--verde-neon);color:var(--negro);font-size:0.55rem;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:0.5rem;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--texto);border-radius:2px;transition:all .3s}
+.banner{
+  background:linear-gradient(90deg,var(--verde-oscuro),var(--verde),var(--verde-oscuro));
+  text-align:center;padding:0.6rem 1rem;
+  font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--crema);font-weight:500;
+  margin-top:64px;
+}
+.hero{
+  min-height:90vh;display:flex;align-items:center;
+  padding:4rem 2rem;
+  background:
+    radial-gradient(ellipse at 70% 50%, rgba(45,90,39,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(126,200,80,0.08) 0%, transparent 50%),
+    var(--negro);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232D5A27' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative}
+.hero-eyebrow{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.2rem;font-weight:500}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.2rem);font-weight:700;line-height:1.1;color:var(--crema);margin-bottom:1.2rem}
+.hero h1 em{font-style:italic;color:var(--verde-neon)}
+.hero-sub{font-size:0.9rem;color:var(--texto-muted);line-height:1.8;max-width:420px;font-weight:300;margin-bottom:2.5rem}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.8rem;border-radius:2px;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .25s;font-family:'Inter',sans-serif;font-weight:600;text-decoration:none}
+.btn-primary{background:var(--verde-neon);color:var(--negro)}
+.btn-primary:hover{background:#96D96A;transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--crema);border:1px solid var(--borde)}
+.btn-ghost:hover{border-color:var(--verde-neon);color:var(--verde-neon)}
+.hero-visual{
+  position:relative;aspect-ratio:4/5;
+  background:linear-gradient(160deg,var(--verde-oscuro) 0%,#0a150a 100%);
+  border-radius:4px;overflow:hidden;
+  border:1px solid var(--borde);
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-visual-emoji{font-size:8rem;opacity:0.15;position:absolute}
+.hero-cards{position:absolute;inset:1.5rem;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0.8rem}
+.hcard{background:rgba(255,255,255,0.04);border:1px solid rgba(126,200,80,0.15);border-radius:3px;overflow:hidden;display:flex;flex-direction:column}
+.hcard-img{flex:1;background:linear-gradient(135deg,var(--verde-oscuro),#0a0f0a);display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.hcard-info{padding:0.5rem 0.6rem;background:rgba(13,13,13,0.8)}
+.hcard-name{font-size:0.65rem;color:var(--crema);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hcard-price{font-size:0.7rem;color:var(--verde-neon);font-weight:600}
+#destacados{padding:5rem 2rem;background:var(--verde-oscuro)}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.6rem;font-weight:500}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:400;color:var(--crema);margin-bottom:0.5rem;line-height:1.2}
+.section-sub{font-size:0.82rem;color:var(--texto-muted);margin-bottom:3rem;font-weight:300}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
+.product-card{
+  background:var(--negro);border:1px solid var(--borde);border-radius:4px;
+  overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(126,200,80,0.12);border-color:rgba(126,200,80,0.3)}
+.product-img{
+  aspect-ratio:3/4;
+  background:linear-gradient(135deg,var(--verde-oscuro) 0%,#070f07 100%);
+  display:flex;align-items:center;justify-content:center;font-size:4rem;
+  position:relative;overflow:hidden;
+}
+.product-img img{width:100%;height:100%;object-fit:cover;display:block}
+.unico-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--dorado);color:var(--negro);
+  font-size:0.55rem;padding:0.2rem 0.5rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  border-radius:1px;
+}
+.product-info{padding:1rem 1.1rem 1.2rem}
+.product-cat{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.3rem}
+.product-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:400;color:var(--crema);margin-bottom:0.6rem;line-height:1.3}
+.product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:0.5rem}
+.product-price{font-size:1rem;font-weight:600;color:var(--crema)}
+.add-btn{
+  background:var(--verde);color:var(--crema);border:none;
+  padding:0.45rem 0.9rem;font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:background .2s;font-family:'Inter',sans-serif;font-weight:600;
+}
+.add-btn:hover{background:var(--verde-neon);color:var(--negro)}
+#insumos{padding:5rem 2rem;background:var(--negro)}
+.insumos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.insumo-card{
+  background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;
+  padding:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:1rem;
+}
+.insumo-card:hover{border-color:rgba(126,200,80,0.4);background:#1f3a1f}
+.insumo-emoji{font-size:2rem;flex-shrink:0}
+.insumo-name{font-size:0.85rem;font-weight:500;color:var(--crema);margin-bottom:0.2rem}
+.insumo-precio{font-size:0.8rem;color:var(--verde-neon);font-weight:600}
+.insumo-stock{font-size:0.62rem;color:var(--texto-muted);letter-spacing:1px;text-transform:uppercase}
+#kits{padding:5rem 2rem;background:linear-gradient(180deg,var(--verde-oscuro) 0%,var(--negro) 100%)}
+.kits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.kit-card{
+  background:var(--negro);border:1px solid var(--dorado);border-radius:4px;
+  overflow:hidden;position:relative;cursor:pointer;transition:all .25s;
+}
+.kit-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(200,168,75,0.15)}
+.kit-badge{
+  position:absolute;top:0;right:0;
+  background:var(--dorado);color:var(--negro);
+  font-size:0.6rem;font-weight:700;padding:0.3rem 0.8rem;letter-spacing:2px;text-transform:uppercase;
+}
+.kit-img{aspect-ratio:16/9;background:linear-gradient(135deg,#1a1a00,#0d0d00);display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.kit-info{padding:1.2rem}
+.kit-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.4rem}
+.kit-desc{font-size:0.78rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem}
+.kit-prices{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem}
+.kit-original{font-size:0.82rem;color:var(--texto-muted);text-decoration:line-through}
+.kit-precio{font-size:1.1rem;font-weight:700;color:var(--dorado)}
+.kit-ahorro{font-size:0.62rem;background:rgba(200,168,75,0.15);color:var(--dorado);padding:0.15rem 0.5rem;border-radius:2px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+#consultoria{padding:5rem 2rem;background:var(--negro)}
+.consul-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.consul-sub{font-size:0.88rem;color:var(--texto-muted);line-height:1.8;margin-bottom:2rem}
+.faq-list{display:flex;flex-direction:column;gap:0.8rem}
+.faq-item{border:1px solid var(--borde);border-radius:3px;overflow:hidden}
+.faq-pregunta{
+  padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  font-size:0.85rem;font-weight:500;color:var(--crema);background:var(--verde-oscuro);
+  transition:background .2s;user-select:none;
+}
+.faq-pregunta:hover{background:#1f3a1f}
+.faq-arrow{font-size:0.7rem;color:var(--verde-neon);transition:transform .2s}
+.faq-respuesta{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(26,46,26,0.5)}
+.faq-respuesta p{padding:1rem 1.2rem;font-size:0.82rem;color:var(--texto-muted);line-height:1.7}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-item.open .faq-respuesta{max-height:200px}
+.tip-card{
+  background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;
+  padding:1.2rem;display:flex;gap:1rem;align-items:flex-start;
+  transition:border-color .2s;cursor:default;
+}
+.tip-card:hover{border-color:rgba(126,200,80,0.3)}
+.tip-emoji{font-size:1.5rem;flex-shrink:0;margin-top:2px}
+.tip-titulo{font-size:0.85rem;font-weight:600;color:var(--crema);margin-bottom:0.3rem}
+.tip-texto{font-size:0.78rem;color:var(--texto-muted);line-height:1.6}
+.wsp-cta{
+  padding:3rem 2rem;
+  background:linear-gradient(135deg,var(--verde-oscuro),#0d1a0d);
+  text-align:center;border-top:1px solid var(--borde);
+}
+.wsp-cta h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--crema);margin-bottom:0.6rem}
+.wsp-cta p{font-size:0.85rem;color:var(--texto-muted);margin-bottom:1.5rem}
+.wsp-btn{
+  display:inline-flex;align-items:center;gap:0.7rem;
+  background:#25D366;color:white;padding:0.9rem 2rem;
+  border:none;border-radius:2px;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:background .2s;text-decoration:none;
+}
+.wsp-btn:hover{background:#1aad50}
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-sidebar{
+  position:fixed;top:0;right:0;bottom:0;width:400px;max-width:100vw;
+  background:#111;z-index:201;transform:translateX(100%);transition:transform .35s ease;
+  display:flex;flex-direction:column;border-left:1px solid var(--borde);
+}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-header{padding:1.5rem;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between}
+.cart-header h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--crema)}
+.cart-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--texto-muted)}
+.cart-items{flex:1;overflow-y:auto;padding:1.5rem}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--texto-muted)}
+.cart-empty span{font-size:3rem;display:block;margin-bottom:1rem}
+.cart-footer{padding:1.5rem;border-top:1px solid var(--borde)}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:1rem}
+.cart-total span{font-size:0.8rem;color:var(--texto-muted);letter-spacing:1px;text-transform:uppercase}
+.cart-total strong{font-size:1.1rem;color:var(--crema)}
+.pay-options{display:flex;flex-direction:column;gap:0.6rem}
+.pay-btn{width:100%;padding:0.85rem;border:none;border-radius:2px;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all .2s}
+.pay-btn:disabled{opacity:0.6;cursor:not-allowed}
+.pay-wsp{background:#25D366;color:white}
+.pay-wsp:hover{background:#1aad50}
+.pay-transfer{background:var(--verde-oscuro);color:var(--verde-neon);border:1px solid var(--verde)}
+.pay-transfer:hover{background:var(--verde)}
+.pay-mp{background:rgba(255,255,255,0.06);color:var(--crema);border:1px solid var(--borde)}
+.pay-mp:hover{border-color:var(--verde-neon)}
+.transfer-note{font-size:0.65rem;color:var(--dorado);text-align:center;margin-top:0.3rem;letter-spacing:1px}
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s}
+.panel-overlay.open{opacity:1;pointer-events:all}
+.product-panel{
+  position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);
+  background:#0f0f0f;z-index:301;transform:translateX(100%);
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;border-left:1px solid var(--borde);overflow:hidden;
+}
+.product-panel.open{transform:translateX(0)}
+.panel-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.panel-bc{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--texto-muted)}
+.panel-close-btn{background:none;border:none;cursor:pointer;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--texto-muted);font-size:1.1rem;transition:background .2s}
+.panel-close-btn:hover{background:rgba(255,255,255,0.06)}
+.panel-scroll{flex:1;overflow-y:auto}
+.panel-img{
+  background:linear-gradient(160deg,var(--verde-oscuro),#070f07);
+  display:flex;align-items:center;justify-content:center;
+  min-height:280px;position:relative;overflow:hidden;
+}
+.panel-img img{width:100%;height:auto;object-fit:contain;display:block}
+.panel-img .emoji-big{font-size:7rem;opacity:0.4}
+.panel-body{padding:1.5rem}
+.panel-cat{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.4rem}
+.panel-name{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--crema);margin-bottom:0.5rem;line-height:1.2}
+.panel-price{font-size:1.2rem;font-weight:600;color:var(--crema);margin-bottom:1rem}
+.panel-desc{font-size:0.83rem;color:var(--texto-muted);line-height:1.7;margin-bottom:1.5rem}
+.panel-add{width:100%;padding:1rem;background:var(--verde-neon);color:var(--negro);border:none;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;font-weight:700;transition:background .2s;margin-bottom:0.8rem}
+.panel-add:hover{background:#96D96A}
+.panel-wsp{width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:none;border:1px solid #25D366;color:#25D366;padding:0.75rem;border-radius:2px;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s}
+.panel-wsp:hover{background:#25D366;color:white}
+.unico-aviso{background:rgba(200,168,75,0.1);border:1px solid var(--dorado);border-radius:2px;padding:0.7rem 1rem;font-size:0.75rem;color:var(--dorado);margin-bottom:1rem;text-align:center;letter-spacing:1px}
+footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px solid var(--borde)}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--verde-neon);margin-bottom:0.3rem}
+.footer-sub{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--texto-muted);margin-bottom:1.5rem}
+.footer-info{font-size:0.78rem;color:var(--texto-muted);line-height:2}
+.footer-info a{color:var(--verde-neon);text-decoration:none}
+.footer-copy{margin-top:2rem;font-size:0.65rem;color:#333;letter-spacing:1px}
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--verde-neon);color:var(--negro);padding:0.7rem 1.4rem;border-radius:2px;font-size:0.78rem;letter-spacing:1px;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;font-weight:600}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.mobile-menu{position:fixed;top:64px;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--borde);z-index:99;padding:1.5rem;display:none;flex-direction:column}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:0.85rem;color:var(--texto);text-decoration:none;letter-spacing:2px;text-transform:uppercase;padding:0.9rem 0;border-bottom:1px solid var(--borde);display:block}
+.mobile-menu a:last-child{border-bottom:none}
+@media(max-width:768px){
+  nav{padding:0 1rem}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero{padding:3rem 1.2rem;min-height:auto}
+  .hero-inner{grid-template-columns:1fr;gap:0}
+  .hero-visual{display:none}
+  .hero h1{font-size:2.4rem}
+  .consul-grid{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem}
+  .insumos-grid{grid-template-columns:1fr 1fr}
+  .kits-grid{grid-template-columns:1fr}
+  section{padding:3rem 1.2rem}
+  #destacados,#insumos,#kits,#consultoria{padding:3rem 1.2rem}
+  .product-panel{width:100vw}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">🌿 Green Witch Grow<span>Grow Shop · Mar del Plata</span></div>
+  <ul class="nav-links">
+    <li><a href="#destacados">Parafernalia</a></li>
+    <li><a href="#insumos">Insumos</a></li>
+    <li><a href="#kits" class="hot">🔥 Kits</a></li>
+    <li><a href="#cultivo">Cultivo</a></li>
+    <li><a href="#consultoria">Consultoría</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <button class="cart-btn" onclick="toggleCart()">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#destacados" onclick="closeMenu()">Parafernalia & Diseño</a>
+  <a href="#insumos" onclick="closeMenu()">Insumos de Diario</a>
+  <a href="#kits" onclick="closeMenu()">🔥 Kits con Descuento</a>
+  <a href="#consultoria" onclick="closeMenu()">Consultoría & Tips</a>
+</div>
+<div class="banner">🌱 Envíos a todo el país · 10% de descuento pagando por transferencia</div>
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Grow Shop de barrio · Todo para tu cultivo</div>
+      <h1>Cultivá con <em>estilo.</em><br>Comprá donde y cuando quieras, de forma segura.</h1>
+      <p class="hero-sub">Parafernalia de diseño único, insumos de diario y el mejor asesoramiento de Mar del Plata — ahora en tu pantalla, las 24 horas.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="#destacados" class="btn btn-primary">Ver productos</a>
+        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">Consultar por WhatsApp</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-emoji">🌿</div>
+      <div class="hero-cards" id="heroCards"></div>
+    </div>
+  </div>
+</section>
+<section id="destacados">
+  <div class="section-inner">
+    <div class="section-eyebrow">Parafernalia & Diseño</div>
+    <h2 class="section-title">Piezas únicas que no encontrás en otro lugar</h2>
+    <p class="section-sub">Cada pieza es seleccionada a mano. Cuando se vende, se vende — no hay reposición.</p>
+    <div class="products-grid" id="paraGrid"></div>
+  </div>
+</section>
+<section id="insumos">
+  <div class="section-inner">
+    <div class="section-eyebrow">Insumos de Diario</div>
+    <h2 class="section-title">Lo que usás todos los días</h2>
+    <p class="section-sub">Papelillos, filtros, encendedores y más. Pedilo online y retirás en el local.</p>
+    <div class="insumos-grid" id="insumosGrid"></div>
+  </div>
+</section>
+<section id="kits">
+  <div class="section-inner">
+    <div class="section-eyebrow">🔥 Kits con Descuento</div>
+    <h2 class="section-title">Combos armados para regalar o malcriar</h2>
+    <p class="section-sub">Más producto, mejor precio. Ideal para fechas especiales o para vos.</p>
+    <div class="kits-grid" id="kitsGrid"></div>
+  </div>
+</section>
+<section id="cultivo" style="padding:5rem 2rem;background:linear-gradient(180deg,var(--negro) 0%,var(--verde-oscuro) 100%)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Consultoría del Cultivo</div>
+    <h2 class="section-title">Arrancá a cultivar con el kit correcto</h2>
+    <p class="section-sub">No importa si es tu primera planta o si ya tenés experiencia — te armamos el kit ideal para tu situación y te acompañamos en el proceso.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-bottom:4rem" id="cultivoKitsGrid"></div>
+    <div style="background:rgba(126,200,80,0.05);border:1px solid rgba(126,200,80,0.15);border-radius:4px;padding:2.5rem;margin-bottom:3rem">
+      <div class="section-eyebrow" style="margin-bottom:0.5rem">Recomendación personalizada</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--crema);margin-bottom:0.8rem;line-height:1.3">¿No sabés por dónde empezar?<br>Contanos tu situación y te armamos el kit ideal.</h3>
+      <p style="font-size:0.85rem;color:var(--texto-muted);line-height:1.7;margin-bottom:1.5rem;max-width:560px">Espacio disponible, presupuesto, interior o exterior — con esa info te recomendamos exactamente qué necesitás y qué no. Sin gastar de más.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20arrancar%20a%20cultivar%20y%20no%20s%C3%A9%20por%20d%C3%B3nde%20empezar.%20%C2%BFMe%20ayud%C3%A1s%3F" target="_blank" class="btn btn-primary">🌱 Quiero mi kit personalizado</a>
+        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">💬 Hablar con un asesor</a>
+      </div>
+    </div>
+    <div class="section-eyebrow" style="margin-bottom:1rem">Tips del equipo</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem" id="tipsGrid"></div>
+  </div>
+</section>
+<section id="consultoria" style="padding:5rem 2rem;background:var(--negro)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Preguntas Frecuentes</div>
+    <h2 class="section-title" style="margin-bottom:3rem">El asesoramiento que nos diferencia</h2>
+    <div class="consul-grid">
+      <div class="consul-texto">
+        <p class="consul-sub">¿Tenés dudas sobre tu cultivo? ¿No sabés qué insumo usar? Escribinos por WhatsApp o revisá las preguntas frecuentes — siempre hay alguien del equipo para ayudarte.</p>
+        <div class="faq-list" id="faqList"></div>
+        <div style="margin-top:1.5rem">
+          <a href="https://wa.me/5492234239776?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20cultivo" target="_blank" class="btn btn-primary">💬 Hacer una consulta</a>
+        </div>
+      </div>
+      <div class="tips-grid" id="tipsGrid2"></div>
+    </div>
+  </div>
+</section>
+<section style="padding:5rem 2rem;background:var(--negro)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Entrega en Mar del Plata</div>
+    <h2 class="section-title">¿Se te acabaron el viernes a la tarde?<br><em>Te lo llevamos en 2 horas.</em></h2>
+    <p style="font-size:0.88rem;color:var(--texto-muted);line-height:1.8;max-width:580px;margin-bottom:3rem">Lo que ninguna plataforma grande puede darte: tu pedido en la puerta antes de que arranque el finde. Sin esperar al lunes, sin depender del correo.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;margin-bottom:3rem">
+      <div style="background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1.8rem;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🏪</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Retiro en el local</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Hacé tu pedido online y retiralo en Tejedor 1985 en el acto. Sin esperar, sin sorpresas.</div>
+        <div style="font-size:0.7rem;color:var(--verde-neon);letter-spacing:2px;text-transform:uppercase;font-weight:600">Lun a Sab · 10 a 13:30 y 16 a 19:30</div>
+      </div>
+      <div style="background:var(--verde-oscuro);border:2px solid var(--verde-neon);border-radius:4px;padding:1.8rem;text-align:center;position:relative">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--verde-neon);color:var(--negro);font-size:0.6rem;font-weight:700;padding:0.25rem 0.8rem;border-radius:2px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap">⚡ Lo que nadie más ofrece</div>
+        <div style="font-size:2.5rem;margin-bottom:1rem">🛵</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Envío por moto en el día</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Para pedidos dentro de Mar del Plata. Coordinás por WhatsApp y en 2 horas está en tu puerta.</div>
+        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20pedir%20env%C3%ADo%20por%20moto%20hoy" target="_blank" style="display:inline-block;background:var(--verde-neon);color:var(--negro);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none">Pedir ahora →</a>
+      </div>
+      <div style="background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1.8rem;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:1rem">📦</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Envío a todo el país</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Para el resto del país enviamos por correo o encomienda. 3 a 5 días hábiles según la provincia.</div>
+        <div style="font-size:0.7rem;color:var(--verde-neon);letter-spacing:2px;text-transform:uppercase;font-weight:600">Consultá costos por WhatsApp</div>
+      </div>
+    </div>
+    <div style="background:rgba(126,200,80,0.05);border-left:3px solid var(--verde-neon);padding:1.2rem 1.5rem;border-radius:0 3px 3px 0">
+      <p style="font-size:0.85rem;color:var(--texto-muted);line-height:1.7"><strong style="color:var(--crema)">¿Por qué esto importa?</strong> Un viernes a la tarde, un cliente que se quedó sin insumos para el fin de semana no puede esperar al lunes a que llegue el correo. Con Green Witch puede comprarlo online y tenerlo en la puerta en dos horas. Eso no lo puede replicar ninguna plataforma grande.</p>
+    </div>
+  </div>
+</section>
+<div class="wsp-cta">
+  <h3>¿Preferís hablar con nosotros?</h3>
+  <p>Estamos en el local de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs. También por WhatsApp.</p>
+  <a href="https://wa.me/5492234239776" target="_blank" class="wsp-btn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.525 3.48 11.815 11.815 0 0012.05 0z"/></svg>
+    Escribinos ahora
+  </a>
+</div>
+<footer>
+  <a href="admin.html" class="footer-logo" style="text-decoration:none;cursor:default">🌿 Green Witch Grow</a>
+  <div class="footer-sub">Grow Shop · Mar del Plata</div>
+  <div class="footer-info">
+    <p>📍 Tejedor 1985, Mar del Plata</p>
+    <p>Lun a Sab · 10 a 13:30 hs y 16 a 19:30 hs</p>
+    <p><a href="https://wa.me/5492234239776">WhatsApp: +54 9 223 423-9776</a></p>
+    <p><a href="https://instagram.com/greenwitchgrow" target="_blank">@greenwitchgrow</a></p>
+  </div>
+  <div class="footer-copy">© 2026 Green Witch Grow · Todos los derechos reservados</div>
+</footer>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header"><h3>Tu carrito</h3><button class="cart-close" onclick="toggleCart()">✕</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <div class="pay-options">
+      <button class="pay-btn pay-wsp" onclick="sendWsp()">🟢 Pagar por WhatsApp</button>
+      <button class="pay-btn pay-transfer">🏦 Transferencia bancaria <span style="color:var(--dorado)">(-10%)</span></button>
+      <button class="pay-btn pay-mp" id="mpBtn" onclick="payWithMercadoPago(this)">💳 Mercado Pago</button>
+    </div>
+    <div class="transfer-note">💡 Pagando por transferencia ahorrás el 10%</div>
+  </div>
+</div>
+<div class="panel-overlay" id="panelOverlay" onclick="if(event.target.id==='panelOverlay')closePanel()"></div>
+<div class="product-panel" id="productPanel">
+  <div class="panel-header">
+    <span class="panel-bc" id="panelBc">Producto</span>
+    <button class="panel-close-btn" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-scroll">
+    <div class="panel-img" id="panelImg"></div>
+    <div class="panel-body">
+      <div class="panel-cat" id="panelCat"></div>
+      <div class="panel-name" id="panelName"></div>
+      <div class="panel-price" id="panelPrice"></div>
+      <div id="unicoAviso" class="unico-aviso" style="display:none">⚡ Pieza única — cuando se vende, no se repone</div>
+      <div class="panel-desc" id="panelDesc"></div>
+      <button class="panel-add" onclick="addFromPanel()">Agregar al carrito</button>
+      <button class="panel-wsp" onclick="consultarWsp()">💬 Consultar por WhatsApp</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ===== SUPABASE =====
+const SB_URL='https://vsltrtouczsfexynzfhr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbHRydG91Y3pzZmV4eW56ZmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA4NjMsImV4cCI6MjEwNDU0Njg2M30.5kgfDii0YRBJMYGhR6ZopWQXv_XyFdOT0Z1BfhFTTfs';
+const SB_API=`${SB_URL}/rest/v1/products`;
+const SB_H={'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`};
+
+let allProducts=[];
+let openProduct=null;
+let cart=[];
+
+async function loadProducts(){
+  try{
+    const r=await fetch(`${SB_API}?select=*&active=eq.true&order=created_at.asc`,{headers:SB_H});
+    if(!r.ok)throw new Error('Error');
+    allProducts=await r.json();
+    const para=allProducts.filter(p=>p.category==='Parafernalia');
+    const insumos=allProducts.filter(p=>p.category==='Insumos');
+    const kits=allProducts.filter(p=>p.category==='Kits');
+    const cultivo=allProducts.filter(p=>p.category==='Cultivo');
+    renderHero(para.slice(0,4));
+    renderPara(para);
+    renderInsumos(insumos);
+    renderKits(kits);
+    renderCultivoKits(cultivo);
+  }catch(e){console.error('Error cargando productos:',e)}
+}
+
+function formatPrice(p){return '$'+Number(p).toLocaleString('es-AR')}
+
+function renderHero(items){
+  const g=document.getElementById('heroCards');
+  if(!g||!items.length)return;
+  g.innerHTML=items.map(p=>`
+    <div class="hcard"><div class="hcard-img">${p.emoji||'🌿'}</div><div class="hcard-info"><div class="hcard-name">${p.name}</div><div class="hcard-price">${formatPrice(p.price)}</div></div></div>
+  `).join('');
+}
+
+function renderPara(items){
+  const g=document.getElementById('paraGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>`
+    <div class="product-card" onclick="openPanel_('${p.id}')">
+      <div class="product-img">
+        ${p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<span style="font-size:4rem">${p.emoji||'🌿'}</span>`}
+        ${p.unico?'<div class="unico-badge">⚡ Único</div>':''}
+      </div>
+      <div class="product-info">
+        <div class="product-cat">Parafernalia & Diseño</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-footer">
+          <span class="product-price">${formatPrice(p.price)}</span>
+          <button class="add-btn" onclick="event.stopPropagation();quickAdd('${p.id}')">+ Agregar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderInsumos(items){
+  const g=document.getElementById('insumosGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>{
+    const stockLabel=p.stock<=5?'Últimas unidades':'Stock disponible';
+    return `
+    <div class="insumo-card" onclick="quickAdd('${p.id}')">
+      <div class="insumo-emoji">${p.emoji||'📦'}</div>
+      <div class="insumo-info">
+        <div class="insumo-name">${p.name}</div>
+        <div class="insumo-precio">${formatPrice(p.price)}</div>
+        <div class="insumo-stock">${stockLabel}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderKits(items){
+  const g=document.getElementById('kitsGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>{
+    const ahorro=p.original_price?Math.round((1-p.price/p.original_price)*100)+'% OFF':'';
+    return `
+    <div class="kit-card">
+      ${ahorro?`<div class="kit-badge">${p.tag||ahorro}</div>`:''}
+      <div class="kit-img">${p.emoji||'🎁'}</div>
+      <div class="kit-info">
+        <div class="kit-name">${p.name}</div>
+        <div class="kit-desc">${p.description||''}</div>
+        <div class="kit-prices">
+          ${p.original_price?`<span class="kit-original">${formatPrice(p.original_price)}</span>`:''}
+          <span class="kit-precio">${formatPrice(p.price)}</span>
+          ${ahorro?`<span class="kit-ahorro">${ahorro}</span>`:''}
+        </div>
+        <button class="add-btn" style="width:100%;padding:0.6rem" onclick="quickAdd('${p.id}')">+ Agregar kit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCultivoKits(items){
+  const g=document.getElementById('cultivoKitsGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>`
+    <div class="kit-card" style="border-color:var(--verde)">
+      ${p.tag?`<div class="kit-badge" style="background:var(--verde-neon);color:var(--negro)">${p.tag}</div>`:''}
+      <div class="kit-img" style="background:linear-gradient(135deg,var(--verde-oscuro),#070f07)">${p.emoji||'🌱'}</div>
+      <div class="kit-info">
+        <div class="kit-name">${p.name}</div>
+        <div class="kit-desc">${p.description||''}</div>
+        <div class="kit-prices">
+          ${p.original_price?`<span class="kit-original">${formatPrice(p.original_price)}</span>`:''}
+          <span class="kit-precio" style="color:var(--verde-neon)">${formatPrice(p.price)}</span>
+        </div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <button class="add-btn" style="flex:1;padding:0.6rem" onclick="quickAdd('${p.id}')">+ Agregar</button>
+          <a href="https://wa.me/5492234239776?text=Hola!%20Me%20interesa%20el%20${encodeURIComponent(p.name)}" target="_blank" class="add-btn" style="flex:1;padding:0.6rem;text-align:center;text-decoration:none;background:var(--verde-oscuro);color:var(--verde-neon);border:1px solid var(--verde)">Consultar</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== PANEL DE PRODUCTO =====
+function openPanel_(id){
+  const p=allProducts.find(x=>x.id===id);
+  if(!p)return;
+  openProduct=p;
+  document.getElementById('panelBc').textContent=p.category;
+  document.getElementById('panelImg').innerHTML=p.img?`<img src="${p.img}" alt="${p.name}">`:`<span class="emoji-big">${p.emoji||'🌿'}</span>`;
+  document.getElementById('panelCat').textContent=p.category;
+  document.getElementById('panelName').textContent=p.name;
+  document.getElementById('panelPrice').textContent=formatPrice(p.price);
+  document.getElementById('panelDesc').textContent=p.description||'';
+  document.getElementById('unicoAviso').style.display=p.unico?'':'none';
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('productPanel').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePanel(){
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('productPanel').classList.remove('open');
+  document.body.style.overflow='';
+}
+function addFromPanel(){
+  if(!openProduct)return;
+  addToCart({id:openProduct.id,name:openProduct.name,price:openProduct.price,emoji:openProduct.emoji||'🌿'});
+  closePanel();
+}
+function consultarWsp(){
+  if(!openProduct)return;
+  window.open(`https://wa.me/5492234239776?text=Hola! Me interesa: ${openProduct.name} (${formatPrice(openProduct.price)})`,'_blank');
+}
+function quickAdd(id){
+  const p=allProducts.find(x=>x.id===id);
+  if(!p)return;
+  addToCart({id:p.id,name:p.name,price:Number(p.price),emoji:p.emoji||'🌿'});
+}
+
+// ===== CARRITO =====
+function addToCart(item){
+  const ex=cart.find(i=>i.id===item.id);
+  if(ex){ex.qty++;}else{cart.push({...item,qty:1});}
+  updateCartUI();
+  showToast(`"${item.name}" agregado ✓`);
+}
+function getTotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
+function updateCartUI(){
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  const el=document.getElementById('cartCount');
+  el.textContent=count;
+  el.style.display=count?'flex':'none';
+}
+function toggleCart(){
+  const s=document.getElementById('cartSidebar');
+  const o=document.getElementById('cartOverlay');
+  const open=s.classList.toggle('open');
+  o.classList.toggle('open',open);
+  if(open){renderCart();document.body.style.overflow='hidden';}
+  else{document.body.style.overflow='';}
+}
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const footer=document.getElementById('cartFooter');
+  if(!cart.length){
+    el.innerHTML='<div class="cart-empty"><span>🛒</span><p style="font-size:0.82rem;letter-spacing:1px">Tu carrito está vacío</p></div>';
+    footer.style.display='none';return;
+  }
+  footer.style.display='';
+  el.innerHTML=cart.map(item=>`
+    <div style="display:flex;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--borde)">
+      <div style="width:60px;height:75px;background:var(--verde-oscuro);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">${item.emoji}</div>
+      <div style="flex:1">
+        <div style="font-size:0.85rem;color:var(--crema);margin-bottom:0.3rem;font-weight:500">${item.name}</div>
+        <div style="font-size:0.8rem;color:var(--verde-neon);font-weight:600">${formatPrice(item.price*item.qty)}</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem">
+          <button onclick="changeQty('${item.id}',-1)" style="background:none;border:1px solid var(--borde);color:var(--crema);width:24px;height:24px;border-radius:2px;cursor:pointer;font-size:0.9rem">−</button>
+          <span style="font-size:0.82rem;color:var(--texto-muted)">${item.qty}</span>
+          <button onclick="changeQty('${item.id}',1)" style="background:none;border:1px solid var(--borde);color:var(--crema);width:24px;height:24px;border-radius:2px;cursor:pointer;font-size:0.9rem">+</button>
+          <button onclick="removeItem('${item.id}')" style="background:none;border:none;color:var(--texto-muted);font-size:0.7rem;cursor:pointer;margin-left:0.3rem;letter-spacing:1px;text-transform:uppercase">Quitar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('cartTotal').textContent=formatPrice(getTotal());
+}
+function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
+function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
+function sendWsp(){
+  const lines=cart.map(i=>`• ${i.name} x${i.qty} = ${formatPrice(i.price*i.qty)}`).join('%0A');
+  const msg=`Hola Green Witch! Quiero hacer un pedido:%0A%0A${lines}%0A%0ATotal: ${formatPrice(getTotal())}%0A%0A¿Cómo coordino el pago?`;
+  window.open(`https://wa.me/5492234239776?text=${msg}`,'_blank');
+}
+async function payWithMercadoPago(btn){
+  if(!cart.length)return;
+  const originalText=btn.textContent;
+  btn.disabled=true;btn.textContent='Redirigiendo a Mercado Pago...';
+  try{
+    const items=cart.map(i=>({title:i.name,quantity:i.qty,unit_price:i.price}));
+    const res=await fetch('/api/create-preference',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+    if(!res.ok)throw new Error('Error al crear la preferencia de pago');
+    const data=await res.json();
+    const checkoutUrl=data.sandbox_init_point||data.init_point;
+    if(!checkoutUrl)throw new Error('No se recibió URL de pago');
+    window.location.href=checkoutUrl;
+  }catch(err){console.error(err);showToast('No se pudo iniciar el pago. Probá de nuevo o usá otro medio.');btn.disabled=false;btn.textContent=originalText;}
+}
+
+// ===== FAQ & TIPS (estáticos) =====
+const faqData=[
+  {q:'¿Cuánto tarda el envío?',r:'Los envíos se realizan por correo o encomienda. El tiempo estimado es de 3 a 5 días hábiles según la provincia. Te avisamos por WhatsApp cuando despachamos.'},
+  {q:'¿Puedo retirar en el local?',r:'¡Claro! Podés reservar tu pedido online y retirarlo en Tejedor 1985. Te esperamos de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs.'},
+  {q:'¿Cómo pago por transferencia?',r:'Al elegir esa opción te mostramos el CBU. Hacés la transferencia, nos mandás el comprobante por WhatsApp y despachamos el pedido en el día.'},
+  {q:'¿Los productos únicos se reponen?',r:'No — eso es lo que los hace especiales. Cuando una pieza dice "Única", si se vende ya no está más. Por eso vale la pena no esperar.'},
+];
+const tipsData=[
+  {emoji:'💧',titulo:'Riego perfecto',texto:'La mayoría de los problemas en cultivo vienen del exceso de agua. Dejá que los primeros 2-3 cm de sustrato estén secos antes de volver a regar.'},
+  {emoji:'🌡️',titulo:'Temperatura ideal',texto:'Entre 20°C y 28°C en el día y no menos de 16°C en la noche. Un termómetro digital te cambia la vida en el grow.'},
+  {emoji:'🧪',titulo:'pH del agua',texto:'El rango óptimo es entre 6.0 y 7.0 para tierra. Fuera de ese rango los nutrientes no se absorben bien aunque los apliques correctamente.'},
+];
+function renderFaq(){
+  const g=document.getElementById('faqList');if(!g)return;
+  g.innerHTML=faqData.map((f,i)=>`<div class="faq-item" id="faq${i}"><div class="faq-pregunta" onclick="toggleFaq(${i})">${f.q}<span class="faq-arrow">▼</span></div><div class="faq-respuesta"><p>${f.r}</p></div></div>`).join('');
+}
+function toggleFaq(i){document.querySelectorAll('.faq-item').forEach((el,idx)=>{if(idx===i)el.classList.toggle('open');else el.classList.remove('open');});}
+function renderTips(){
+  ['tipsGrid','tipsGrid2'].forEach(id=>{
+    const g=document.getElementById(id);if(!g)return;
+    g.innerHTML=tipsData.map(t=>`<div class="tip-card"><div class="tip-emoji">${t.emoji}</div><div><div class="tip-titulo">${t.titulo}</div><div class="tip-texto">${t.texto}</div></div></div>`).join('');
+  });
+}
+
+// ===== UTILS =====
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');}
+function closeMenu(){document.getElementById('hamburger').classList.remove('open');document.getElementById('mobileMenu').classList.remove('open');}
+
+// ===== INIT =====
+loadProducts();
+renderFaq();
+renderTips();
+</script>
+</body>
+</html>
