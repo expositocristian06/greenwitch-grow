@@ -266,6 +266,23 @@
     }
     .img-preview.show { display: block; }
 
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+    .upload-area:hover { border-color: var(--green); background: rgba(74,222,128,0.03); }
+    .upload-area.dragover { border-color: var(--green); background: rgba(74,222,128,0.08); }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+    .upload-text { font-size: 0.8rem; color: var(--text-dim); }
+    .upload-text strong { color: var(--green); }
+    .upload-status { font-size: 0.75rem; margin-top: 0.4rem; color: var(--green); }
+
     /* Toast */
     .toast {
       position: fixed;
@@ -358,7 +375,6 @@
           <option value="Insumos">Insumos</option>
           <option value="Kits">Kits</option>
           <option value="Cultivo">Cultivo</option>
-          <option value="Cultivo">Cultivo</option>
           <option value="Consultoría">Consultoría</option>
         </select>
       </div>
@@ -398,8 +414,14 @@
         </div>
       </div>
       <div class="form-group">
-        <label>URL de imagen</label>
-        <input type="url" id="fImg" placeholder="https://..." oninput="previewImg(this.value)">
+        <label>Foto del producto</label>
+        <input type="hidden" id="fImg">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text"><strong>Tocá para elegir una foto</strong><br>o arrastrá la imagen acá</div>
+          <div class="upload-status" id="uploadStatus"></div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this.files[0])">
         <img class="img-preview" id="imgPreview" alt="Preview">
       </div>
     </form>
@@ -425,6 +447,59 @@
   };
 
   let allProducts = [];
+
+  // ===== FILE UPLOAD =====
+  const uploadArea = document.getElementById('uploadArea');
+  uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFileUpload(e.dataTransfer.files[0]);
+  });
+
+  async function handleFileUpload(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('Solo se permiten imágenes', true);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('La imagen no puede superar 5 MB', true);
+      return;
+    }
+    const status = document.getElementById('uploadStatus');
+    status.textContent = 'Subiendo foto...';
+    status.style.color = 'var(--text-dim)';
+    try {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const fileName = `${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/products/${fileName}`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': file.type,
+          'x-upsert': 'true'
+        },
+        body: file
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Error al subir la foto');
+      }
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/products/${fileName}`;
+      document.getElementById('fImg').value = publicUrl;
+      previewImg(publicUrl);
+      status.textContent = '✓ Foto subida correctamente';
+      status.style.color = 'var(--green)';
+    } catch (e) {
+      status.textContent = 'Error: ' + e.message;
+      status.style.color = 'var(--red)';
+      showToast(e.message, true);
+    }
+    document.getElementById('fileInput').value = '';
+  }
 
   // ===== FETCH PRODUCTS =====
   async function loadProducts() {
@@ -503,6 +578,7 @@
   function openPanel(product = null) {
     document.getElementById('overlay').classList.add('open');
     document.getElementById('panel').classList.add('open');
+    document.getElementById('uploadStatus').textContent = '';
     if (product) {
       document.getElementById('panelTitle').textContent = 'Editar producto';
       document.getElementById('editId').value = product.id;
@@ -517,10 +593,15 @@
       document.getElementById('fUnico').checked = product.unico ?? false;
       document.getElementById('fImg').value = product.img ?? '';
       previewImg(product.img);
+      if (product.img) {
+        document.getElementById('uploadStatus').textContent = '✓ Foto cargada (tocá para cambiar)';
+        document.getElementById('uploadStatus').style.color = 'var(--green)';
+      }
     } else {
       document.getElementById('panelTitle').textContent = 'Nuevo producto';
       document.getElementById('editId').value = '';
       document.getElementById('productForm').reset();
+      document.getElementById('fImg').value = '';
       document.getElementById('imgPreview').classList.remove('show');
     }
   }
@@ -565,6 +646,7 @@
     const editId = document.getElementById('editId').value;
     try {
       document.getElementById('saveBtn').textContent = 'Guardando...';
+      document.getElementById('saveBtn').disabled = true;
       let res;
       if (editId) {
         res = await fetch(`${API}?id=eq.${editId}`, {
@@ -583,6 +665,7 @@
       showToast(e.message, true);
     } finally {
       document.getElementById('saveBtn').textContent = 'Guardar';
+      document.getElementById('saveBtn').disabled = false;
     }
   }
 
