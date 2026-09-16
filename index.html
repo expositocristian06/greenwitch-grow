@@ -1,1020 +1,896 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin · Green Witch Grow</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #0d1a0d;
-      --surface: #142214;
-      --surface2: #1a2e1a;
-      --border: #2a4a2a;
-      --green: #4ade80;
-      --green-dark: #16a34a;
-      --red: #ef4444;
-      --text: #e8f5e8;
-      --text-dim: #8aab8a;
-      --white: #fff;
-      --dorado: #C8A84B;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    header h1 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--green);
-    }
-    header h1 span { color: var(--text-dim); font-weight: 400; }
-    .header-actions { display: flex; gap: 0.5rem; align-items: center; }
-    .btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--green-dark);
-      color: var(--white);
-    }
-    .btn-primary:hover { background: var(--green); color: var(--bg); }
-    .btn-danger {
-      background: transparent;
-      color: var(--red);
-      border: 1px solid var(--red);
-    }
-    .btn-danger:hover { background: var(--red); color: var(--white); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover { background: var(--surface2); color: var(--text); }
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--dorado);
-      border: 1px solid var(--dorado);
-    }
-    .btn-secondary:hover { background: rgba(200,168,75,0.15); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Witch Grow · Tienda Online</title>
+<meta name="description" content="Green Witch Grow — Grow Shop en Mar del Plata. Fertilizantes, insecticidas, sustrato, parafernalia y accesorios. Envíos a todo el país.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --negro:#0D0D0D;
+  --verde-oscuro:#1A2E1A;
+  --verde:#2D5A27;
+  --verde-claro:#52A647;
+  --verde-neon:#7EC850;
+  --crema:#F0EBD8;
+  --crema-oscuro:#D9D0B8;
+  --dorado:#C8A84B;
+  --texto:#E8E0CC;
+  --texto-muted:#8A8A7A;
+  --borde:#2A3A2A;
+  --white:#FFFFFF;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);overflow-x:hidden}
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(13,13,13,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--borde);
+  padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;
+  color:var(--verde-neon);letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem;
+}
+.nav-logo span{font-size:0.55rem;color:var(--texto-muted);font-family:'Inter',sans-serif;font-weight:300;letter-spacing:4px;text-transform:uppercase;display:block;margin-top:2px}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;color:var(--texto-muted);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--verde-neon)}
+.nav-links a.hot{color:var(--dorado)}
+.cart-btn{position:relative;background:none;border:none;cursor:pointer;font-size:1.2rem;padding:0.5rem;color:var(--texto)}
+.cart-count{position:absolute;top:-2px;right:-4px;background:var(--verde-neon);color:var(--negro);font-size:0.55rem;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:0.5rem;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--texto);border-radius:2px;transition:all .3s}
 
-    /* Tabs */
-    .admin-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .admin-tab {
-      padding: 0.75rem 1.25rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      background: none;
-      border: none;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .admin-tab:hover { color: var(--text); }
-    .admin-tab.active { color: var(--green); border-bottom-color: var(--green); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+/* ===== BANNER ===== */
+.banner{
+  background:linear-gradient(90deg,var(--verde-oscuro),var(--verde),var(--verde-oscuro));
+  text-align:center;padding:0.6rem 1rem;
+  font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--crema);font-weight:500;
+  margin-top:64px;
+}
 
-    /* Stats bar */
-    .stats {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      flex: 1;
-      min-width: 120px;
-    }
-    .stat-card .label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.25rem; }
-    .stat-card .value { font-size: 1.5rem; font-weight: 700; }
+/* ===== HERO ===== */
+.hero{
+  min-height:80vh;display:flex;align-items:center;
+  padding:4rem 2rem;
+  background:
+    radial-gradient(ellipse at 70% 50%, rgba(45,90,39,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(126,200,80,0.08) 0%, transparent 50%),
+    var(--negro);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232D5A27' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%;position:relative;display:flex;align-items:center;gap:3rem}
+.hero-content{flex:1}
+.hero-eyebrow{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.2rem;font-weight:500}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;line-height:1.15;color:var(--crema);margin-bottom:1.2rem}
+.hero h1 em{font-style:italic;color:var(--verde-neon)}
+.hero-sub{font-size:0.9rem;color:var(--texto-muted);line-height:1.8;max-width:580px;font-weight:300;margin-bottom:2.5rem}
+.hero-logo{flex-shrink:0;width:340px;display:flex;align-items:center;justify-content:center;pointer-events:none;position:relative}
+.hero-logo img{width:100%;height:auto;filter:drop-shadow(0 0 60px rgba(126,200,80,0.3)) drop-shadow(0 0 120px rgba(126,200,80,0.15));opacity:0.85}
+.hero-bg-left{position:absolute;left:-3rem;bottom:-4rem;width:200px;opacity:0.07;pointer-events:none;transform:scaleX(-1)}
+.hero-bg-left img{width:100%;height:auto}
 
-    /* Products grid */
-    .products-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .products-header h2 { font-size: 1rem; font-weight: 600; }
-    .search-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.5rem 0.75rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.85rem;
-      width: 220px;
-    }
-    .search-box::placeholder { color: var(--text-dim); }
-    .search-box:focus { outline: none; border-color: var(--green); }
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.8rem;border-radius:2px;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .25s;font-family:'Inter',sans-serif;font-weight:600;text-decoration:none}
+.btn-primary{background:var(--verde-neon);color:var(--negro)}
+.btn-primary:hover{background:#96D96A;transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--crema);border:1px solid var(--borde)}
+.btn-ghost:hover{border-color:var(--verde-neon);color:var(--verde-neon)}
 
-    .products-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      background: var(--surface);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .products-table th {
-      text-align: left;
-      padding: 0.75rem 1rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface2);
-    }
-    .products-table td {
-      padding: 0.75rem 1rem;
-      font-size: 0.85rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-    .products-table tr:last-child td { border-bottom: none; }
-    .products-table tr:hover td { background: rgba(74,222,128,0.03); }
+/* ===== SECTIONS ===== */
+#destacados{padding:5rem 2rem;background:var(--verde-oscuro)}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.6rem;font-weight:500}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:400;color:var(--crema);margin-bottom:0.5rem;line-height:1.2}
+.section-sub{font-size:0.82rem;color:var(--texto-muted);margin-bottom:3rem;font-weight:300}
 
-    .product-thumb {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
-      object-fit: cover;
-      background: var(--surface2);
-    }
-    .product-name-cell { font-weight: 500; }
-    .badge {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .badge-active { background: rgba(74,222,128,0.15); color: var(--green); }
-    .badge-inactive { background: rgba(239,68,68,0.15); color: var(--red); }
-    .badge-cat {
-      background: rgba(74,222,128,0.1);
-      color: var(--green);
-      font-weight: 400;
-    }
-    .actions-cell {
-      display: flex;
-      gap: 0.4rem;
-    }
-    .btn-sm {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.75rem;
-      border-radius: 6px;
-    }
+/* ===== PRODUCTS GRID ===== */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
+.product-card{
+  background:var(--negro);border:1px solid var(--borde);border-radius:4px;
+  overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(126,200,80,0.12);border-color:rgba(126,200,80,0.3)}
+.product-img{
+  aspect-ratio:3/4;
+  background:linear-gradient(135deg,var(--verde-oscuro) 0%,#070f07 100%);
+  display:flex;align-items:center;justify-content:center;font-size:4rem;
+  position:relative;overflow:hidden;
+}
+.product-img img{width:100%;height:100%;object-fit:cover;display:block}
+.unico-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--dorado);color:var(--negro);
+  font-size:0.55rem;padding:0.2rem 0.5rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  border-radius:1px;
+}
+.product-info{padding:1rem 1.1rem 1.2rem}
+.product-cat{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.3rem}
+.product-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:400;color:var(--crema);margin-bottom:0.6rem;line-height:1.3}
+.product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:0.5rem}
+.product-price{font-size:1rem;font-weight:600;color:var(--crema)}
+.add-btn{
+  background:var(--verde);color:var(--crema);border:none;
+  padding:0.45rem 0.9rem;font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:background .2s;font-family:'Inter',sans-serif;font-weight:600;
+}
+.add-btn:hover{background:var(--verde-neon);color:var(--negro)}
 
-    /* Panel lateral */
-    .panel-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 200;
-      display: none;
-    }
-    .panel-overlay.open { display: block; }
-    .panel {
-      position: fixed;
-      top: 0;
-      right: -460px;
-      width: 440px;
-      max-width: 100vw;
-      height: 100vh;
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      z-index: 201;
-      transition: right 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    .panel.open { right: 0; }
-    .panel-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .panel-header h3 { font-size: 1rem; font-weight: 600; }
-    .panel-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.25rem;
-    }
-    .panel-footer {
-      padding: 1rem 1.25rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      margin-bottom: 0.35rem;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 0.75rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.85rem;
-    }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--green);
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-    .img-preview {
-      width: 100%;
-      max-height: 180px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin-top: 0.5rem;
-      background: var(--bg);
-      display: none;
-    }
-    .img-preview.show { display: block; }
+/* ===== INSUMOS ===== */
+#insumos{padding:5rem 2rem;background:var(--negro)}
+.insumos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.insumo-card{
+  background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;
+  padding:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:1rem;
+}
+.insumo-card:hover{border-color:rgba(126,200,80,0.4);background:#1f3a1f}
+.insumo-emoji{font-size:2rem;flex-shrink:0}
+.insumo-name{font-size:0.85rem;font-weight:500;color:var(--crema);margin-bottom:0.2rem}
+.insumo-precio{font-size:0.8rem;color:var(--verde-neon);font-weight:600}
+.insumo-stock{font-size:0.62rem;color:var(--texto-muted);letter-spacing:1px;text-transform:uppercase}
 
-    /* Upload area */
-    .upload-area {
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 1.2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: var(--bg);
-    }
-    .upload-area:hover { border-color: var(--green); background: rgba(74,222,128,0.03); }
-    .upload-area.dragover { border-color: var(--green); background: rgba(74,222,128,0.08); }
-    .upload-icon { font-size: 2rem; margin-bottom: 0.4rem; }
-    .upload-text { font-size: 0.8rem; color: var(--text-dim); }
-    .upload-text strong { color: var(--green); }
-    .upload-status { font-size: 0.75rem; margin-top: 0.4rem; color: var(--green); }
+/* ===== KITS ===== */
+#kits{padding:5rem 2rem;background:linear-gradient(180deg,var(--verde-oscuro) 0%,var(--negro) 100%)}
+.kits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.kit-card{
+  background:var(--negro);border:1px solid var(--dorado);border-radius:4px;
+  overflow:hidden;position:relative;cursor:pointer;transition:all .25s;
+}
+.kit-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(200,168,75,0.15)}
+.kit-badge{
+  position:absolute;top:0;right:0;
+  background:var(--dorado);color:var(--negro);
+  font-size:0.6rem;font-weight:700;padding:0.3rem 0.8rem;letter-spacing:2px;text-transform:uppercase;
+}
+.kit-img{aspect-ratio:16/9;background:linear-gradient(135deg,#1a1a00,#0d0d00);display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.kit-info{padding:1.2rem}
+.kit-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.4rem}
+.kit-desc{font-size:0.78rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem}
+.kit-prices{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem}
+.kit-original{font-size:0.82rem;color:var(--texto-muted);text-decoration:line-through}
+.kit-precio{font-size:1.1rem;font-weight:700;color:var(--dorado)}
+.kit-ahorro{font-size:0.62rem;background:rgba(200,168,75,0.15);color:var(--dorado);padding:0.15rem 0.5rem;border-radius:2px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
 
-    /* Categories management */
-    .cat-list { display: flex; flex-direction: column; gap: 0.5rem; }
-    .cat-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-    }
-    .cat-item-name { font-size: 0.9rem; font-weight: 500; }
-    .cat-item-count { font-size: 0.75rem; color: var(--text-dim); }
-    .cat-item-actions { display: flex; gap: 0.3rem; }
-    .cat-add-row {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .cat-add-row input { flex: 1; }
-    .cat-locked-notice {
-      background: rgba(200,168,75,0.08);
-      border: 1px solid rgba(200,168,75,0.25);
-      border-radius: 8px;
-      padding: 1rem;
-      font-size: 0.82rem;
-      color: var(--dorado);
-      text-align: center;
-      margin-top: 1rem;
-    }
+/* ===== CONSULTORIA ===== */
+#consultoria{padding:5rem 2rem;background:var(--negro)}
+.consul-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.consul-sub{font-size:0.88rem;color:var(--texto-muted);line-height:1.8;margin-bottom:2rem}
+.faq-list{display:flex;flex-direction:column;gap:0.8rem}
+.faq-item{border:1px solid var(--borde);border-radius:3px;overflow:hidden}
+.faq-pregunta{
+  padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  font-size:0.85rem;font-weight:500;color:var(--crema);background:var(--verde-oscuro);
+  transition:background .2s;user-select:none;
+}
+.faq-pregunta:hover{background:#1f3a1f}
+.faq-arrow{font-size:0.7rem;color:var(--verde-neon);transition:transform .2s}
+.faq-respuesta{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(26,46,26,0.5)}
+.faq-respuesta p{padding:1rem 1.2rem;font-size:0.82rem;color:var(--texto-muted);line-height:1.7}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-item.open .faq-respuesta{max-height:200px}
+.tip-card{
+  background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;
+  padding:1.2rem;display:flex;gap:1rem;align-items:flex-start;
+  transition:border-color .2s;cursor:default;
+}
+.tip-card:hover{border-color:rgba(126,200,80,0.3)}
+.tip-emoji{font-size:1.5rem;flex-shrink:0;margin-top:2px}
+.tip-titulo{font-size:0.85rem;font-weight:600;color:var(--crema);margin-bottom:0.3rem}
+.tip-texto{font-size:0.78rem;color:var(--texto-muted);line-height:1.6}
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--green-dark);
-      color: var(--white);
-      padding: 0.75rem 1.25rem;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 300;
-    }
-    .toast.error { background: var(--red); }
-    .toast.show { transform: translateY(0); opacity: 1; }
+/* ===== WSP CTA ===== */
+.wsp-cta{
+  padding:3rem 2rem;
+  background:linear-gradient(135deg,var(--verde-oscuro),#0d1a0d);
+  text-align:center;border-top:1px solid var(--borde);
+  position:relative;overflow:hidden;
+}
+.wsp-cta-brujita{position:absolute;left:2rem;top:50%;transform:translateY(-50%);width:120px;opacity:0.12;pointer-events:none}
+.wsp-cta-brujita img{width:100%;height:auto}
+.wsp-cta h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--crema);margin-bottom:0.6rem;position:relative}
+.wsp-cta p{font-size:0.85rem;color:var(--texto-muted);margin-bottom:1.5rem;position:relative}
+.wsp-btn{
+  display:inline-flex;align-items:center;gap:0.7rem;
+  background:#25D366;color:white;padding:0.9rem 2rem;
+  border:none;border-radius:2px;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:background .2s;text-decoration:none;
+}
+.wsp-btn:hover{background:#1aad50}
 
-    .empty-state {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-dim);
-    }
-    .loading { text-align: center; padding: 2rem; color: var(--text-dim); }
+/* ===== CART ===== */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-sidebar{
+  position:fixed;top:0;right:0;bottom:0;width:400px;max-width:100vw;
+  background:#111;z-index:201;transform:translateX(100%);transition:transform .35s ease;
+  display:flex;flex-direction:column;border-left:1px solid var(--borde);
+}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-header{padding:1.5rem;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between}
+.cart-header h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--crema)}
+.cart-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--texto-muted)}
+.cart-items{flex:1;overflow-y:auto;padding:1.5rem}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--texto-muted)}
+.cart-empty span{font-size:3rem;display:block;margin-bottom:1rem}
+.cart-footer{padding:1.5rem;border-top:1px solid var(--borde)}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:1rem}
+.cart-total span{font-size:0.8rem;color:var(--texto-muted);letter-spacing:1px;text-transform:uppercase}
+.cart-total strong{font-size:1.1rem;color:var(--crema)}
+.pay-options{display:flex;flex-direction:column;gap:0.6rem}
+.pay-btn{width:100%;padding:0.85rem;border:none;border-radius:2px;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all .2s}
+.pay-btn:disabled{opacity:0.6;cursor:not-allowed}
+.pay-wsp{background:#25D366;color:white}
+.pay-wsp:hover{background:#1aad50}
+.pay-transfer{background:var(--verde-oscuro);color:var(--verde-neon);border:1px solid var(--verde)}
+.pay-transfer:hover{background:var(--verde)}
+.pay-mp{background:rgba(255,255,255,0.06);color:var(--crema);border:1px solid var(--borde)}
+.pay-mp:hover{border-color:var(--verde-neon)}
+.transfer-note{font-size:0.65rem;color:var(--dorado);text-align:center;margin-top:0.3rem;letter-spacing:1px}
 
-    @media (max-width: 700px) {
-      .products-table { font-size: 0.8rem; }
-      .panel { width: 100vw; }
-      .form-row { grid-template-columns: 1fr; }
-      .stats { flex-direction: column; }
-      .products-header { flex-direction: column; gap: 0.75rem; align-items: stretch; }
-      .search-box { width: 100%; }
-      .hide-mobile { display: none; }
-    }
-  </style>
+/* ===== PRODUCT PANEL ===== */
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s}
+.panel-overlay.open{opacity:1;pointer-events:all}
+.product-panel{
+  position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);
+  background:#0f0f0f;z-index:301;transform:translateX(100%);
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;border-left:1px solid var(--borde);overflow:hidden;
+}
+.product-panel.open{transform:translateX(0)}
+.panel-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.panel-bc{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--texto-muted)}
+.panel-close-btn{background:none;border:none;cursor:pointer;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--texto-muted);font-size:1.1rem;transition:background .2s}
+.panel-close-btn:hover{background:rgba(255,255,255,0.06)}
+.panel-scroll{flex:1;overflow-y:auto}
+.panel-img{
+  background:linear-gradient(160deg,var(--verde-oscuro),#070f07);
+  display:flex;align-items:center;justify-content:center;
+  min-height:280px;position:relative;overflow:hidden;
+}
+.panel-img img{width:100%;height:auto;object-fit:contain;display:block}
+.panel-img .emoji-big{font-size:7rem;opacity:0.4}
+.panel-body{padding:1.5rem}
+.panel-cat{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.4rem}
+.panel-name{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--crema);margin-bottom:0.5rem;line-height:1.2}
+.panel-price{font-size:1.2rem;font-weight:600;color:var(--crema);margin-bottom:1rem}
+.panel-desc{font-size:0.83rem;color:var(--texto-muted);line-height:1.7;margin-bottom:1.5rem}
+.panel-add{width:100%;padding:1rem;background:var(--verde-neon);color:var(--negro);border:none;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;font-weight:700;transition:background .2s;margin-bottom:0.8rem}
+.panel-add:hover{background:#96D96A}
+.panel-wsp{width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:none;border:1px solid #25D366;color:#25D366;padding:0.75rem;border-radius:2px;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s}
+.panel-wsp:hover{background:#25D366;color:white}
+.unico-aviso{background:rgba(200,168,75,0.1);border:1px solid var(--dorado);border-radius:2px;padding:0.7rem 1rem;font-size:0.75rem;color:var(--dorado);margin-bottom:1rem;text-align:center;letter-spacing:1px}
+
+/* ===== FOOTER ===== */
+footer{background:#070707;padding:3rem 2rem 4rem;text-align:center;border-top:1px solid var(--borde);position:relative;overflow:hidden}
+.footer-brujita{position:absolute;bottom:-20px;right:1.5rem;width:180px;opacity:0.2;pointer-events:none}
+.footer-brujita img{width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(126,200,80,0.2))}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--verde-neon);margin-bottom:0.3rem;position:relative}
+.footer-sub{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--texto-muted);margin-bottom:1.5rem}
+.footer-info{font-size:0.78rem;color:var(--texto-muted);line-height:2}
+.footer-info a{color:var(--verde-neon);text-decoration:none}
+.footer-copy{margin-top:2rem;font-size:0.65rem;color:#333;letter-spacing:1px}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--verde-neon);color:var(--negro);padding:0.7rem 1.4rem;border-radius:2px;font-size:0.78rem;letter-spacing:1px;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;font-weight:600}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu{position:fixed;top:64px;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--borde);z-index:99;padding:1.5rem;display:none;flex-direction:column}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:0.85rem;color:var(--texto);text-decoration:none;letter-spacing:2px;text-transform:uppercase;padding:0.9rem 0;border-bottom:1px solid var(--borde);display:block}
+.mobile-menu a:last-child{border-bottom:none}
+
+/* ===== LOAD MORE BUTTON ===== */
+.load-more-wrap{text-align:center;margin-top:2rem}
+.load-more-btn{background:transparent;color:var(--verde-neon);border:1px solid var(--verde);padding:0.7rem 2rem;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;font-weight:600;transition:all .2s}
+.load-more-btn:hover{background:var(--verde);color:var(--crema)}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton{background:linear-gradient(90deg,var(--verde-oscuro) 25%,#243d24 50%,var(--verde-oscuro) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{height:320px;border-radius:4px}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  nav{padding:0 1rem}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero{padding:3rem 1.2rem;min-height:auto}
+  .hero h1{font-size:1.9rem}
+  .hero-inner{flex-direction:column;gap:0}
+  .hero-logo{width:180px;margin:0 auto 1.5rem;order:-1}
+  .hero-logo img{opacity:0.9}
+  .hero-bg-left{display:none}
+  .consul-grid{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem}
+  .insumos-grid{grid-template-columns:1fr 1fr}
+  .kits-grid{grid-template-columns:1fr}
+  section{padding:3rem 1.2rem}
+  #destacados,#insumos,#kits,#consultoria{padding:3rem 1.2rem}
+  .product-panel{width:100vw}
+  .footer-brujita{width:120px;right:0.5rem;opacity:0.15}
+}
+</style>
 </head>
 <body>
 
-<header>
-  <h1>🌿 Green Witch Grow <span>· Panel Admin</span></h1>
-  <div class="header-actions">
-    <button class="btn btn-primary" onclick="openPanel()">+ Nuevo producto</button>
+<!-- ===== NAV — sin emoji de hoja ===== -->
+<nav>
+  <div class="nav-logo">Green Witch Grow<span>Grow Shop · Mar del Plata</span></div>
+  <ul class="nav-links">
+    <li><a href="#destacados">Parafernalia</a></li>
+    <li><a href="#insumos">Insumos</a></li>
+    <li><a href="#kits" class="hot">🔥 Kits</a></li>
+    <li><a href="#cultivo">Cultivo</a></li>
+    <li><a href="#consultoria">Consultoría</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <button class="cart-btn" onclick="toggleCart()">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
   </div>
-</header>
+</nav>
 
-<div class="container">
-  <!-- ===== TABS — Productos | Categorías (flag-gated) ===== -->
-  <div class="admin-tabs" id="adminTabs">
-    <button class="admin-tab active" data-tab="products" onclick="switchTab('products')">Productos</button>
-    <!-- Tab de categorías: se muestra solo si canManageCategories = true -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#destacados" onclick="closeMenu()">Parafernalia & Diseño</a>
+  <a href="#insumos" onclick="closeMenu()">Insumos de Diario</a>
+  <a href="#kits" onclick="closeMenu()">🔥 Kits con Descuento</a>
+  <a href="#consultoria" onclick="closeMenu()">Consultoría & Tips</a>
+</div>
+
+<!-- ===== BANNER — sin promo 10% ===== -->
+<div class="banner">🌱 Envíos a todo el país · Atención por WhatsApp</div>
+
+<!-- ===== HERO — texto actualizado + logo brujita ===== -->
+<section class="hero">
+  <!-- Brujita decorativa izquierda (espejada, muy sutil) -->
+  <div class="hero-bg-left" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-footer.webp" type="image/webp">
+      <img src="assets/brujita-footer.png" alt="" width="200" height="356" loading="lazy" decoding="async">
+    </picture>
   </div>
-
-  <!-- ===== TAB: PRODUCTOS ===== -->
-  <div class="tab-content active" id="tab-products">
-    <div class="stats">
-      <div class="stat-card">
-        <div class="label">Total productos</div>
-        <div class="value" id="statTotal">–</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Activos</div>
-        <div class="value" id="statActive">–</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Categorías</div>
-        <div class="value" id="statCats">–</div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Grow Shop de barrio · Todo para tu cultivo</div>
+      <h1>Cultivá con <em>nosotros.</em><br>Comprá donde y cuando quieras, de forma segura.</h1>
+      <p class="hero-sub">Fertilizantes, insecticidas, sustrato... todo lo necesario para un cultivo sano y fuerte. Parafernalia, tabaco y accesorios para el fumador.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="#destacados" class="btn btn-primary">Ver productos</a>
+        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">Consultar por WhatsApp</a>
       </div>
     </div>
-
-    <div class="products-header">
-      <h2>Productos</h2>
-      <input type="text" class="search-box" placeholder="Buscar producto..." oninput="filterProducts(this.value)">
-    </div>
-
-    <div id="tableContainer">
-      <div class="loading">Cargando productos...</div>
+    <!-- Logo Brujita — decorativo -->
+    <div class="hero-logo" aria-hidden="true">
+      <picture>
+        <source srcset="assets/brujita.webp" type="image/webp">
+        <img src="assets/brujita.png" alt="" width="600" height="1067" loading="eager" decoding="async">
+      </picture>
     </div>
   </div>
+</section>
 
-  <!-- ===== TAB: CATEGORÍAS (hidden by default) ===== -->
-  <div class="tab-content" id="tab-categories">
-    <div class="products-header" style="margin-bottom:1.5rem">
-      <h2>Gestión de Categorías</h2>
+<!-- ===== PARAFERNALIA ===== -->
+<section id="destacados">
+  <div class="section-inner">
+    <div class="section-eyebrow">Parafernalia & Diseño</div>
+    <h2 class="section-title">Piezas únicas que no encontrás en otro lugar</h2>
+    <p class="section-sub">Cada pieza es seleccionada a mano. Cuando se vende, se vende — no hay reposición.</p>
+    <div class="products-grid" id="paraGrid">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
+  </div>
+</section>
 
-    <div id="catManager">
-      <!-- Populated by JS when canManageCategories = true -->
+<!-- ===== INSUMOS ===== -->
+<section id="insumos">
+  <div class="section-inner">
+    <div class="section-eyebrow">Insumos de Diario</div>
+    <h2 class="section-title">Lo que usás todos los días</h2>
+    <p class="section-sub">Papelillos, filtros, encendedores y más. Pedilo online y retirás en el local.</p>
+    <div class="insumos-grid" id="insumosGrid"></div>
+  </div>
+</section>
+
+<!-- ===== KITS ===== -->
+<section id="kits">
+  <div class="section-inner">
+    <div class="section-eyebrow">🔥 Kits con Descuento</div>
+    <h2 class="section-title">Combos armados para regalar o malcriar</h2>
+    <p class="section-sub">Más producto, mejor precio. Ideal para fechas especiales o para vos.</p>
+    <div class="kits-grid" id="kitsGrid"></div>
+  </div>
+</section>
+
+<!-- ===== CULTIVO ===== -->
+<section id="cultivo" style="padding:5rem 2rem;background:linear-gradient(180deg,var(--negro) 0%,var(--verde-oscuro) 100%)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Consultoría del Cultivo</div>
+    <h2 class="section-title">Arrancá a cultivar con el kit correcto</h2>
+    <p class="section-sub">No importa si es tu primera planta o si ya tenés experiencia — te armamos el kit ideal para tu situación y te acompañamos en el proceso.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-bottom:4rem" id="cultivoKitsGrid"></div>
+    <div style="background:rgba(126,200,80,0.05);border:1px solid rgba(126,200,80,0.15);border-radius:4px;padding:2.5rem;margin-bottom:3rem">
+      <div class="section-eyebrow" style="margin-bottom:0.5rem">Recomendación personalizada</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--crema);margin-bottom:0.8rem;line-height:1.3">¿No sabés por dónde empezar?<br>Contanos tu situación y te armamos el kit ideal.</h3>
+      <p style="font-size:0.85rem;color:var(--texto-muted);line-height:1.7;margin-bottom:1.5rem;max-width:560px">Espacio disponible, presupuesto, interior o exterior — con esa info te recomendamos exactamente qué necesitás y qué no. Sin gastar de más.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20arrancar%20a%20cultivar%20y%20no%20s%C3%A9%20por%20d%C3%B3nde%20empezar.%20%C2%BFMe%20ayud%C3%A1s%3F" target="_blank" class="btn btn-primary">🌱 Quiero mi kit personalizado</a>
+        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">💬 Hablar con un asesor</a>
+      </div>
     </div>
+    <div class="section-eyebrow" style="margin-bottom:1rem">Tips del equipo</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem" id="tipsGrid"></div>
+  </div>
+</section>
+
+<!-- ===== CONSULTORIA ===== -->
+<section id="consultoria" style="padding:5rem 2rem;background:var(--negro)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Preguntas Frecuentes</div>
+    <h2 class="section-title" style="margin-bottom:3rem">El asesoramiento que nos diferencia</h2>
+    <div class="consul-grid">
+      <div class="consul-texto">
+        <p class="consul-sub">¿Tenés dudas sobre tu cultivo? ¿No sabés qué insumo usar? Escribinos por WhatsApp o revisá las preguntas frecuentes — siempre hay alguien del equipo para ayudarte.</p>
+        <div class="faq-list" id="faqList"></div>
+        <div style="margin-top:1.5rem">
+          <a href="https://wa.me/5492234239776?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20cultivo" target="_blank" class="btn btn-primary">💬 Hacer una consulta</a>
+        </div>
+      </div>
+      <div class="tips-grid" id="tipsGrid2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ENTREGA ===== -->
+<section style="padding:5rem 2rem;background:var(--negro)">
+  <div class="section-inner">
+    <div class="section-eyebrow">Entrega en Mar del Plata</div>
+    <h2 class="section-title">¿Se te acabaron el viernes a la tarde?<br><em>Te lo llevamos en 2 horas.</em></h2>
+    <p style="font-size:0.88rem;color:var(--texto-muted);line-height:1.8;max-width:580px;margin-bottom:3rem">Lo que ninguna plataforma grande puede darte: tu pedido en la puerta antes de que arranque el finde. Sin esperar al lunes, sin depender del correo.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;margin-bottom:3rem">
+      <div style="background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1.8rem;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🏪</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Retiro en el local</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Hacé tu pedido online y retiralo en Tejedor 1985 en el acto. Sin esperar, sin sorpresas.</div>
+        <div style="font-size:0.7rem;color:var(--verde-neon);letter-spacing:2px;text-transform:uppercase;font-weight:600">Lun a Sab · 10 a 13:30 y 16 a 19:30</div>
+      </div>
+      <div style="background:var(--verde-oscuro);border:2px solid var(--verde-neon);border-radius:4px;padding:1.8rem;text-align:center;position:relative">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--verde-neon);color:var(--negro);font-size:0.6rem;font-weight:700;padding:0.25rem 0.8rem;border-radius:2px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap">⚡ Lo que nadie más ofrece</div>
+        <div style="font-size:2.5rem;margin-bottom:1rem">🛵</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Envío por moto en el día</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Para pedidos dentro de Mar del Plata. Coordinás por WhatsApp y en 2 horas está en tu puerta.</div>
+        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20pedir%20env%C3%ADo%20por%20moto%20hoy" target="_blank" style="display:inline-block;background:var(--verde-neon);color:var(--negro);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none">Pedir ahora →</a>
+      </div>
+      <div style="background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1.8rem;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:1rem">📦</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--crema);margin-bottom:0.5rem">Envío a todo el país</div>
+        <div style="font-size:0.8rem;color:var(--texto-muted);line-height:1.6;margin-bottom:1rem">Para el resto del país enviamos por correo o encomienda. 3 a 5 días hábiles según la provincia.</div>
+        <div style="font-size:0.7rem;color:var(--verde-neon);letter-spacing:2px;text-transform:uppercase;font-weight:600">Consultá costos por WhatsApp</div>
+      </div>
+    </div>
+    <div style="background:rgba(126,200,80,0.05);border-left:3px solid var(--verde-neon);padding:1.2rem 1.5rem;border-radius:0 3px 3px 0">
+      <p style="font-size:0.85rem;color:var(--texto-muted);line-height:1.7"><strong style="color:var(--crema)">¿Por qué esto importa?</strong> Un viernes a la tarde, un cliente que se quedó sin insumos para el fin de semana no puede esperar al lunes a que llegue el correo. Con Green Witch puede comprarlo online y tenerlo en la puerta en dos horas. Eso no lo puede replicar ninguna plataforma grande.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WSP CTA ===== -->
+<div class="wsp-cta">
+  <div class="wsp-cta-brujita" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-footer.webp" type="image/webp">
+      <img src="assets/brujita-footer.png" alt="" width="200" height="356" loading="lazy" decoding="async">
+    </picture>
+  </div>
+  <h3>¿Preferís hablar con nosotros?</h3>
+  <p>Estamos en el local de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs. También por WhatsApp.</p>
+  <a href="https://wa.me/5492234239776" target="_blank" class="wsp-btn" style="position:relative">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.525 3.48 11.815 11.815 0 0012.05 0z"/></svg>
+    Escribinos ahora
+  </a>
+</div>
+
+<!-- ===== FOOTER — con brujita decorativa ===== -->
+<footer>
+  <div class="footer-brujita" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-hero.webp" type="image/webp">
+      <img src="assets/brujita-hero.png" alt="" width="400" height="711" loading="lazy" decoding="async">
+    </picture>
+  </div>
+  <a href="admin.html" class="footer-logo" style="text-decoration:none;cursor:default">Green Witch Grow</a>
+  <div class="footer-sub">Grow Shop · Mar del Plata</div>
+  <div class="footer-info">
+    <p>📍 Tejedor 1985, Mar del Plata</p>
+    <p>Lun a Sab · 10 a 13:30 hs y 16 a 19:30 hs</p>
+    <p><a href="https://wa.me/5492234239776">WhatsApp: +54 9 223 423-9776</a></p>
+    <p><a href="https://instagram.com/greenwitchgrow" target="_blank">@greenwitchgrow</a></p>
+  </div>
+  <div class="footer-copy">© 2026 Green Witch Grow · Todos los derechos reservados</div>
+</footer>
+
+<!-- ===== CART SIDEBAR ===== -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header"><h3>Tu carrito</h3><button class="cart-close" onclick="toggleCart()">✕</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <div class="pay-options">
+      <button class="pay-btn pay-wsp" onclick="sendWsp()">🟢 Pagar por WhatsApp</button>
+      <button class="pay-btn pay-transfer">🏦 Transferencia bancaria <span style="color:var(--dorado)">(-10%)</span></button>
+      <button class="pay-btn pay-mp" id="mpBtn" onclick="payWithMercadoPago(this)">💳 Mercado Pago</button>
+    </div>
+    <div class="transfer-note">💡 Pagando por transferencia ahorrás el 10%</div>
   </div>
 </div>
 
-<!-- Panel lateral — Producto -->
-<div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
-<div class="panel" id="panel">
+<!-- ===== PRODUCT PANEL ===== -->
+<div class="panel-overlay" id="panelOverlay" onclick="if(event.target.id==='panelOverlay')closePanel()"></div>
+<div class="product-panel" id="productPanel">
   <div class="panel-header">
-    <h3 id="panelTitle">Nuevo producto</h3>
-    <button class="btn btn-ghost btn-sm" onclick="closePanel()">✕</button>
+    <span class="panel-bc" id="panelBc">Producto</span>
+    <button class="panel-close-btn" onclick="closePanel()">✕</button>
   </div>
-  <div class="panel-body">
-    <form id="productForm" onsubmit="return false;">
-      <input type="hidden" id="editId">
-      <div class="form-group">
-        <label>Nombre *</label>
-        <input type="text" id="fName" required placeholder="Ej: Pipa Vidrio Soplado">
-      </div>
-      <div class="form-group">
-        <label>Categoría *</label>
-        <select id="fCategory" required>
-          <option value="">Seleccionar...</option>
-          <!-- Options populated dynamically from categories list -->
-        </select>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Precio *</label>
-          <input type="number" id="fPrice" required placeholder="15000" min="0" step="1">
-        </div>
-        <div class="form-group">
-          <label>Stock</label>
-          <input type="number" id="fStock" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Descripción</label>
-        <textarea id="fDesc" placeholder="Descripción del producto..."></textarea>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Emoji (icono)</label>
-          <input type="text" id="fEmoji" placeholder="🌿" maxlength="4">
-        </div>
-        <div class="form-group">
-          <label>Precio original (tachado)</label>
-          <input type="number" id="fOrigPrice" placeholder="Opcional" min="0" step="1">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Etiqueta / Badge</label>
-          <input type="text" id="fTag" placeholder="Ej: 16% OFF">
-        </div>
-        <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:0.6rem">
-          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
-            <input type="checkbox" id="fUnico"> Pieza única
-          </label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Foto del producto</label>
-        <input type="hidden" id="fImg">
-        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-          <div class="upload-icon">📷</div>
-          <div class="upload-text"><strong>Tocá para elegir una foto</strong><br>o arrastrá la imagen acá</div>
-          <div class="upload-status" id="uploadStatus"></div>
-        </div>
-        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this.files[0])">
-        <img class="img-preview" id="imgPreview" alt="Preview">
-      </div>
-    </form>
-  </div>
-  <div class="panel-footer">
-    <button class="btn btn-ghost" onclick="closePanel()">Cancelar</button>
-    <button class="btn btn-primary" id="saveBtn" onclick="saveProduct()">Guardar</button>
+  <div class="panel-scroll">
+    <div class="panel-img" id="panelImg"></div>
+    <div class="panel-body">
+      <div class="panel-cat" id="panelCat"></div>
+      <div class="panel-name" id="panelName"></div>
+      <div class="panel-price" id="panelPrice"></div>
+      <div id="unicoAviso" class="unico-aviso" style="display:none">⚡ Pieza única — cuando se vende, no se repone</div>
+      <div class="panel-desc" id="panelDesc"></div>
+      <button class="panel-add" onclick="addFromPanel()">Agregar al carrito</button>
+      <button class="panel-wsp" onclick="consultarWsp()">💬 Consultar por WhatsApp</button>
+    </div>
   </div>
 </div>
-
-<!-- Panel lateral — Categoría -->
-<div class="panel-overlay" id="catOverlay" onclick="closeCatPanel()"></div>
-<div class="panel" id="catPanel">
-  <div class="panel-header">
-    <h3 id="catPanelTitle">Nueva categoría</h3>
-    <button class="btn btn-ghost btn-sm" onclick="closeCatPanel()">✕</button>
-  </div>
-  <div class="panel-body">
-    <form id="catForm" onsubmit="return false;">
-      <input type="hidden" id="catEditId">
-      <div class="form-group">
-        <label>Nombre de la categoría *</label>
-        <input type="text" id="catFName" required placeholder="Ej: Fertilizantes">
-      </div>
-      <div class="form-group">
-        <label>Slug (identificador interno)</label>
-        <input type="text" id="catFSlug" placeholder="Se genera automáticamente">
-      </div>
-      <div class="form-group">
-        <label>Categoría padre (opcional)</label>
-        <select id="catFParent">
-          <option value="">Ninguna — categoría principal</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Emoji</label>
-        <input type="text" id="catFEmoji" placeholder="🌿" maxlength="4">
-      </div>
-      <div class="form-group">
-        <label>Orden de aparición</label>
-        <input type="number" id="catFOrder" placeholder="0" min="0">
-      </div>
-    </form>
-  </div>
-  <div class="panel-footer">
-    <button class="btn btn-ghost" onclick="closeCatPanel()">Cancelar</button>
-    <button class="btn btn-primary" id="catSaveBtn" onclick="saveCategory()">Guardar</button>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-  // ===== SUPABASE CONFIG =====
-  const SUPABASE_URL = 'https://vsltrtouczsfexynzfhr.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbHRydG91Y3pzZmV4eW56ZmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA4NjMsImV4cCI6MjEwNDU0Njg2M30.5kgfDii0YRBJMYGhR6ZopWQXv_XyFdOT0Z1BfhFTTfs';
-  const API = `${SUPABASE_URL}/rest/v1/products`;
-  const HEADERS = {
-    'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
-    'Content-Type': 'application/json',
-    'Prefer': 'return=representation'
-  };
+// ===== SUPABASE =====
+const SB_URL='https://vsltrtouczsfexynzfhr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbHRydG91Y3pzZmV4eW56ZmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA4NjMsImV4cCI6MjEwNDU0Njg2M30.5kgfDii0YRBJMYGhR6ZopWQXv_XyFdOT0Z1BfhFTTfs';
+const SB_API=`${SB_URL}/rest/v1/products`;
+const SB_H={'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`};
 
-  let allProducts = [];
+let allProducts=[];
+let openProduct=null;
+let cart=[];
 
-  // =====================================================
-  // FEATURE FLAG: Category Management
-  // Set to true to enable category CRUD from admin panel.
-  // When true, a "Categorías" tab appears and users can
-  // create/edit/reorder/delete categories + subcategories.
-  // =====================================================
-  const canManageCategories = false;
+// ===== PROGRESSIVE RENDERING CONFIG =====
+const ITEMS_PER_PAGE = 12;
+let paraPage = 0;
+let insumosPage = 0;
 
-  // Default categories (used when canManageCategories = false)
-  const DEFAULT_CATEGORIES = [
-    { id: 'parafernalia', name: 'Parafernalia', slug: 'parafernalia', emoji: '🌿', order: 0, parent: null },
-    { id: 'insumos', name: 'Insumos', slug: 'insumos', emoji: '📦', order: 1, parent: null },
-    { id: 'kits', name: 'Kits', slug: 'kits', emoji: '🎁', order: 2, parent: null },
-    { id: 'cultivo', name: 'Cultivo', slug: 'cultivo', emoji: '🌱', order: 3, parent: null },
-    { id: 'consultoria', name: 'Consultoría', slug: 'consultoria', emoji: '💬', order: 4, parent: null },
-  ];
+async function loadProducts(){
+  try{
+    const r=await fetch(`${SB_API}?select=*&active=eq.true&order=created_at.asc`,{headers:SB_H});
+    if(!r.ok)throw new Error('Error');
+    allProducts=await r.json();
+    const para=allProducts.filter(p=>p.category==='Parafernalia');
+    const insumos=allProducts.filter(p=>p.category==='Insumos');
+    const kits=allProducts.filter(p=>p.category==='Kits');
+    const cultivo=allProducts.filter(p=>p.category==='Cultivo');
+    renderParaPaginated(para);
+    renderInsumosPaginated(insumos);
+    renderKits(kits);
+    renderCultivoKits(cultivo);
+  }catch(e){console.error('Error cargando productos:',e)}
+}
 
-  // Runtime categories list — populated from DB or defaults
-  let categories = [...DEFAULT_CATEGORIES];
+function formatPrice(p){return '$'+Number(p).toLocaleString('es-AR')}
 
-  // ===== CATEGORY MODULE =====
-  function initCategoryModule() {
-    if (!canManageCategories) return;
-
-    // Show the categories tab
-    const tabsEl = document.getElementById('adminTabs');
-    const catTab = document.createElement('button');
-    catTab.className = 'admin-tab';
-    catTab.dataset.tab = 'categories';
-    catTab.textContent = 'Categorías';
-    catTab.onclick = () => switchTab('categories');
-    tabsEl.appendChild(catTab);
-
-    loadCategories();
+// ===== OPTIMIZED IMAGE HELPER =====
+function productImg(src, alt, lazy){
+  if(!src) return '';
+  const loading = lazy ? 'loading="lazy"' : '';
+  // If Supabase Storage, append transform params for WebP + resize
+  if(src.includes('supabase.co/storage')){
+    const small = src.includes('?') ? src+'&width=400&format=webp' : src+'?width=400&format=webp';
+    const medium = src.includes('?') ? src+'&width=600&format=webp' : src+'?width=600&format=webp';
+    return `<img src="${small}" srcset="${small} 400w, ${medium} 600w" sizes="(max-width:768px) 50vw, 280px" alt="${esc(alt)}" ${loading} decoding="async">`;
   }
+  return `<img src="${src}" alt="${esc(alt)}" ${loading} decoding="async">`;
+}
 
-  function switchTab(tabId) {
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tabId));
-  }
+// ===== PARAFERNALIA — PAGINATED =====
+let paraItems = [];
+function renderParaPaginated(items){
+  paraItems = items;
+  paraPage = 0;
+  const g=document.getElementById('paraGrid');
+  if(!g)return;
+  g.innerHTML = '';
+  appendParaPage();
+}
+function appendParaPage(){
+  const g=document.getElementById('paraGrid');
+  const start = paraPage * ITEMS_PER_PAGE;
+  const slice = paraItems.slice(start, start + ITEMS_PER_PAGE);
+  if(!slice.length) return;
+  // Remove existing load-more
+  const existingBtn = g.parentElement.querySelector('.load-more-wrap');
+  if(existingBtn) existingBtn.remove();
 
-  async function loadCategories() {
-    // TODO: When categories table exists in Supabase, fetch from there
-    // const res = await fetch(`${SUPABASE_URL}/rest/v1/categories?select=*&order=order.asc`, { headers: HEADERS });
-    // categories = await res.json();
-    renderCategoryManager();
-  }
-
-  function renderCategoryManager() {
-    const container = document.getElementById('catManager');
-    if (!canManageCategories) {
-      container.innerHTML = `
-        <div class="cat-locked-notice">
-          🔒 La gestión de categorías no está habilitada.<br>
-          Contactá al administrador para activar esta función.
-        </div>`;
-      return;
-    }
-
-    const productCounts = {};
-    allProducts.forEach(p => {
-      productCounts[p.category] = (productCounts[p.category] || 0) + 1;
-    });
-
-    container.innerHTML = `
-      <div class="cat-add-row">
-        <input type="text" class="search-box" id="quickCatName" placeholder="Nombre de nueva categoría..." style="width:100%">
-        <button class="btn btn-primary" onclick="quickAddCategory()">+ Agregar</button>
+  slice.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.onclick = () => openPanel_(p.id);
+    card.innerHTML = `
+      <div class="product-img">
+        ${p.img ? productImg(p.img, p.name, true) : `<span style="font-size:4rem">${p.emoji||'🌿'}</span>`}
+        ${p.unico?'<div class="unico-badge">⚡ Único</div>':''}
       </div>
-      <div class="cat-list">
-        ${categories.map(c => `
-          <div class="cat-item">
-            <div>
-              <span style="margin-right:0.4rem">${c.emoji || ''}</span>
-              <span class="cat-item-name">${esc(c.name)}</span>
-              ${c.parent ? `<span style="font-size:0.7rem;color:var(--text-dim);margin-left:0.5rem">↳ sub de ${esc(c.parent)}</span>` : ''}
-            </div>
-            <div style="display:flex;align-items:center;gap:0.75rem">
-              <span class="cat-item-count">${productCounts[c.name] || 0} productos</span>
-              <div class="cat-item-actions">
-                <button class="btn btn-ghost btn-sm" onclick="editCategory('${c.id}')">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteCategory('${c.id}','${esc(c.name)}')">Borrar</button>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  function quickAddCategory() {
-    const name = document.getElementById('quickCatName').value.trim();
-    if (!name) return;
-    const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
-    categories.push({ id: 'cat_' + Date.now(), name, slug, emoji: '📂', order: categories.length, parent: null });
-    document.getElementById('quickCatName').value = '';
-    populateCategorySelect();
-    renderCategoryManager();
-    showToast('Categoría agregada');
-    // TODO: persist to Supabase categories table
-  }
-
-  function editCategory(id) {
-    const cat = categories.find(c => c.id === id);
-    if (!cat) return;
-    document.getElementById('catPanelTitle').textContent = 'Editar categoría';
-    document.getElementById('catEditId').value = cat.id;
-    document.getElementById('catFName').value = cat.name;
-    document.getElementById('catFSlug').value = cat.slug || '';
-    document.getElementById('catFEmoji').value = cat.emoji || '';
-    document.getElementById('catFOrder').value = cat.order || 0;
-    // Populate parent select excluding self
-    const parentSel = document.getElementById('catFParent');
-    parentSel.innerHTML = '<option value="">Ninguna — categoría principal</option>' +
-      categories.filter(c => c.id !== id).map(c => `<option value="${c.name}" ${cat.parent === c.name ? 'selected' : ''}>${c.name}</option>`).join('');
-    document.getElementById('catOverlay').classList.add('open');
-    document.getElementById('catPanel').classList.add('open');
-  }
-
-  function closeCatPanel() {
-    document.getElementById('catOverlay').classList.remove('open');
-    document.getElementById('catPanel').classList.remove('open');
-  }
-
-  function saveCategory() {
-    const id = document.getElementById('catEditId').value;
-    const name = document.getElementById('catFName').value.trim();
-    if (!name) { showToast('Ingresá un nombre', true); return; }
-    const slug = document.getElementById('catFSlug').value.trim() || name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
-    const emoji = document.getElementById('catFEmoji').value.trim() || '📂';
-    const order = Number(document.getElementById('catFOrder').value) || 0;
-    const parent = document.getElementById('catFParent').value || null;
-
-    if (id) {
-      const idx = categories.findIndex(c => c.id === id);
-      if (idx >= 0) categories[idx] = { ...categories[idx], name, slug, emoji, order, parent };
-    } else {
-      categories.push({ id: 'cat_' + Date.now(), name, slug, emoji, order, parent });
-    }
-    populateCategorySelect();
-    renderCategoryManager();
-    closeCatPanel();
-    showToast(id ? 'Categoría actualizada' : 'Categoría creada');
-    // TODO: persist to Supabase categories table
-  }
-
-  function deleteCategory(id, name) {
-    const count = allProducts.filter(p => p.category === name).length;
-    if (count > 0) {
-      showToast(`No se puede borrar "${name}" — tiene ${count} productos`, true);
-      return;
-    }
-    if (!confirm(`¿Eliminar la categoría "${name}"?`)) return;
-    categories = categories.filter(c => c.id !== id);
-    populateCategorySelect();
-    renderCategoryManager();
-    showToast('Categoría eliminada');
-    // TODO: persist to Supabase
-  }
-
-  // Populate the category <select> in the product form
-  function populateCategorySelect() {
-    const sel = document.getElementById('fCategory');
-    const current = sel.value;
-    sel.innerHTML = '<option value="">Seleccionar...</option>' +
-      categories.map(c => `<option value="${c.name}">${c.emoji || ''} ${c.name}</option>`).join('');
-    if (current) sel.value = current;
-  }
-
-  // ===== FILE UPLOAD =====
-  const uploadArea = document.getElementById('uploadArea');
-  uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-  uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    if (e.dataTransfer.files.length) handleFileUpload(e.dataTransfer.files[0]);
+      <div class="product-info">
+        <div class="product-cat">Parafernalia & Diseño</div>
+        <div class="product-name">${esc(p.name)}</div>
+        <div class="product-footer">
+          <span class="product-price">${formatPrice(p.price)}</span>
+          <button class="add-btn" onclick="event.stopPropagation();quickAdd('${p.id}')">+ Agregar</button>
+        </div>
+      </div>`;
+    g.appendChild(card);
   });
 
-  async function handleFileUpload(file) {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      showToast('Solo se permiten imágenes', true);
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('La imagen no puede superar 5 MB', true);
-      return;
-    }
-    const status = document.getElementById('uploadStatus');
-    status.textContent = 'Subiendo foto...';
-    status.style.color = 'var(--text-dim)';
-    try {
-      const ext = file.name.split('.').pop().toLowerCase();
-      const fileName = `${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/products/${fileName}`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': file.type,
-          'x-upsert': 'true'
-        },
-        body: file
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'Error al subir la foto');
-      }
-      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/products/${fileName}`;
-      document.getElementById('fImg').value = publicUrl;
-      previewImg(publicUrl);
-      status.textContent = '✓ Foto subida correctamente';
-      status.style.color = 'var(--green)';
-    } catch (e) {
-      status.textContent = 'Error: ' + e.message;
-      status.style.color = 'var(--red)';
-      showToast(e.message, true);
-    }
-    document.getElementById('fileInput').value = '';
+  paraPage++;
+  const hasMore = paraPage * ITEMS_PER_PAGE < paraItems.length;
+  if(hasMore){
+    const wrap = document.createElement('div');
+    wrap.className = 'load-more-wrap';
+    wrap.style.gridColumn = '1 / -1';
+    wrap.innerHTML = `<button class="load-more-btn" onclick="appendParaPage()">Ver más productos</button>`;
+    g.appendChild(wrap);
   }
+}
 
-  // ===== FETCH PRODUCTS =====
-  async function loadProducts() {
-    try {
-      const res = await fetch(`${API}?select=*&order=created_at.desc`, { headers: HEADERS });
-      if (!res.ok) throw new Error('Error cargando productos');
-      allProducts = await res.json();
-      renderTable(allProducts);
-      updateStats();
-      if (canManageCategories) renderCategoryManager();
-    } catch (e) {
-      document.getElementById('tableContainer').innerHTML =
-        `<div class="empty-state">Error al cargar: ${e.message}</div>`;
-      showToast(e.message, true);
-    }
+// ===== INSUMOS — PAGINATED =====
+let insumosItems = [];
+function renderInsumosPaginated(items){
+  insumosItems = items;
+  insumosPage = 0;
+  const g=document.getElementById('insumosGrid');
+  if(!g)return;
+  g.innerHTML = '';
+  appendInsumosPage();
+}
+function appendInsumosPage(){
+  const g=document.getElementById('insumosGrid');
+  const start = insumosPage * ITEMS_PER_PAGE;
+  const slice = insumosItems.slice(start, start + ITEMS_PER_PAGE);
+  if(!slice.length) return;
+  const existingBtn = g.parentElement.querySelector('.load-more-wrap');
+  if(existingBtn) existingBtn.remove();
+
+  slice.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'insumo-card';
+    card.onclick = () => quickAdd(p.id);
+    const stockLabel = p.stock<=5 ? 'Últimas unidades' : 'Stock disponible';
+    card.innerHTML = `
+      <div class="insumo-emoji">${p.emoji||'📦'}</div>
+      <div class="insumo-info">
+        <div class="insumo-name">${esc(p.name)}</div>
+        <div class="insumo-precio">${formatPrice(p.price)}</div>
+        <div class="insumo-stock">${stockLabel}</div>
+      </div>`;
+    g.appendChild(card);
+  });
+
+  insumosPage++;
+  const hasMore = insumosPage * ITEMS_PER_PAGE < insumosItems.length;
+  if(hasMore){
+    const wrap = document.createElement('div');
+    wrap.className = 'load-more-wrap';
+    wrap.style.gridColumn = '1 / -1';
+    wrap.innerHTML = `<button class="load-more-btn" onclick="appendInsumosPage()">Ver más insumos</button>`;
+    g.appendChild(wrap);
   }
+}
 
-  // ===== RENDER TABLE =====
-  function renderTable(products) {
-    if (products.length === 0) {
-      document.getElementById('tableContainer').innerHTML =
-        '<div class="empty-state">No hay productos todavía.<br>Hacé click en "+ Nuevo producto" para agregar uno.</div>';
-      return;
-    }
-    const rows = products.map(p => `
-      <tr>
-        <td>${p.img ? `<img class="product-thumb" src="${p.img}" onerror="this.style.display='none'">` : '<div class="product-thumb"></div>'}</td>
-        <td class="product-name-cell">${esc(p.name)}</td>
-        <td><span class="badge badge-cat">${esc(p.category)}</span></td>
-        <td>$${Number(p.price).toLocaleString('es-AR')}</td>
-        <td>${p.stock ?? 0}</td>
-        <td><span class="badge ${p.active ? 'badge-active' : 'badge-inactive'}">${p.active ? 'Activo' : 'Inactivo'}</span></td>
-        <td>
-          <div class="actions-cell">
-            <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">Editar</button>
-            <button class="btn btn-ghost btn-sm" onclick="toggleActive('${p.id}', ${p.active})">${p.active ? 'Desactivar' : 'Activar'}</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}', '${esc(p.name)}')">Borrar</button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
+// ===== KITS (se mantiene igual — pocas tarjetas) =====
+function renderKits(items){
+  const g=document.getElementById('kitsGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>{
+    const ahorro=p.original_price?Math.round((1-p.price/p.original_price)*100)+'% OFF':'';
+    return `
+    <div class="kit-card">
+      ${ahorro?`<div class="kit-badge">${esc(p.tag)||ahorro}</div>`:''}
+      <div class="kit-img">${p.emoji||'🎁'}</div>
+      <div class="kit-info">
+        <div class="kit-name">${esc(p.name)}</div>
+        <div class="kit-desc">${esc(p.description)||''}</div>
+        <div class="kit-prices">
+          ${p.original_price?`<span class="kit-original">${formatPrice(p.original_price)}</span>`:''}
+          <span class="kit-precio">${formatPrice(p.price)}</span>
+          ${ahorro?`<span class="kit-ahorro">${ahorro}</span>`:''}
+        </div>
+        <button class="add-btn" style="width:100%;padding:0.6rem" onclick="quickAdd('${p.id}')">+ Agregar kit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    document.getElementById('tableContainer').innerHTML = `
-      <table class="products-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+function renderCultivoKits(items){
+  const g=document.getElementById('cultivoKitsGrid');
+  if(!g)return;
+  g.innerHTML=items.map(p=>`
+    <div class="kit-card" style="border-color:var(--verde)">
+      ${p.tag?`<div class="kit-badge" style="background:var(--verde-neon);color:var(--negro)">${esc(p.tag)}</div>`:''}
+      <div class="kit-img" style="background:linear-gradient(135deg,var(--verde-oscuro),#070f07)">${p.emoji||'🌱'}</div>
+      <div class="kit-info">
+        <div class="kit-name">${esc(p.name)}</div>
+        <div class="kit-desc">${esc(p.description)||''}</div>
+        <div class="kit-prices">
+          ${p.original_price?`<span class="kit-original">${formatPrice(p.original_price)}</span>`:''}
+          <span class="kit-precio" style="color:var(--verde-neon)">${formatPrice(p.price)}</span>
+        </div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <button class="add-btn" style="flex:1;padding:0.6rem" onclick="quickAdd('${p.id}')">+ Agregar</button>
+          <a href="https://wa.me/5492234239776?text=Hola!%20Me%20interesa%20el%20${encodeURIComponent(p.name)}" target="_blank" class="add-btn" style="flex:1;padding:0.6rem;text-align:center;text-decoration:none;background:var(--verde-oscuro);color:var(--verde-neon);border:1px solid var(--verde)">Consultar</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== PANEL DE PRODUCTO =====
+function openPanel_(id){
+  const p=allProducts.find(x=>x.id===id);
+  if(!p)return;
+  openProduct=p;
+  document.getElementById('panelBc').textContent=p.category;
+  document.getElementById('panelImg').innerHTML=p.img?`<img src="${p.img}" alt="${esc(p.name)}">`:`<span class="emoji-big">${p.emoji||'🌿'}</span>`;
+  document.getElementById('panelCat').textContent=p.category;
+  document.getElementById('panelName').textContent=p.name;
+  document.getElementById('panelPrice').textContent=formatPrice(p.price);
+  document.getElementById('panelDesc').textContent=p.description||'';
+  document.getElementById('unicoAviso').style.display=p.unico?'':'none';
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('productPanel').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePanel(){
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('productPanel').classList.remove('open');
+  document.body.style.overflow='';
+}
+function addFromPanel(){
+  if(!openProduct)return;
+  addToCart({id:openProduct.id,name:openProduct.name,price:openProduct.price,emoji:openProduct.emoji||'🌿'});
+  closePanel();
+}
+function consultarWsp(){
+  if(!openProduct)return;
+  window.open(`https://wa.me/5492234239776?text=Hola! Me interesa: ${openProduct.name} (${formatPrice(openProduct.price)})`,'_blank');
+}
+function quickAdd(id){
+  const p=allProducts.find(x=>x.id===id);
+  if(!p)return;
+  addToCart({id:p.id,name:p.name,price:Number(p.price),emoji:p.emoji||'🌿'});
+}
+
+// ===== CARRITO =====
+function addToCart(item){
+  const ex=cart.find(i=>i.id===item.id);
+  if(ex){ex.qty++;}else{cart.push({...item,qty:1});}
+  updateCartUI();
+  showToast(`"${item.name}" agregado ✓`);
+}
+function getTotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
+function updateCartUI(){
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  const el=document.getElementById('cartCount');
+  el.textContent=count;
+  el.style.display=count?'flex':'none';
+}
+function toggleCart(){
+  const s=document.getElementById('cartSidebar');
+  const o=document.getElementById('cartOverlay');
+  const open=s.classList.toggle('open');
+  o.classList.toggle('open',open);
+  if(open){renderCart();document.body.style.overflow='hidden';}
+  else{document.body.style.overflow='';}
+}
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const footer=document.getElementById('cartFooter');
+  if(!cart.length){
+    el.innerHTML='<div class="cart-empty"><span>🛒</span><p style="font-size:0.82rem;letter-spacing:1px">Tu carrito está vacío</p></div>';
+    footer.style.display='none';return;
   }
+  footer.style.display='';
+  el.innerHTML=cart.map(item=>`
+    <div style="display:flex;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--borde)">
+      <div style="width:60px;height:75px;background:var(--verde-oscuro);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">${item.emoji}</div>
+      <div style="flex:1">
+        <div style="font-size:0.85rem;color:var(--crema);margin-bottom:0.3rem;font-weight:500">${esc(item.name)}</div>
+        <div style="font-size:0.8rem;color:var(--verde-neon);font-weight:600">${formatPrice(item.price*item.qty)}</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem">
+          <button onclick="changeQty('${item.id}',-1)" style="background:none;border:1px solid var(--borde);color:var(--crema);width:24px;height:24px;border-radius:2px;cursor:pointer;font-size:0.9rem">−</button>
+          <span style="font-size:0.82rem;color:var(--texto-muted)">${item.qty}</span>
+          <button onclick="changeQty('${item.id}',1)" style="background:none;border:1px solid var(--borde);color:var(--crema);width:24px;height:24px;border-radius:2px;cursor:pointer;font-size:0.9rem">+</button>
+          <button onclick="removeItem('${item.id}')" style="background:none;border:none;color:var(--texto-muted);font-size:0.7rem;cursor:pointer;margin-left:0.3rem;letter-spacing:1px;text-transform:uppercase">Quitar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('cartTotal').textContent=formatPrice(getTotal());
+}
+function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
+function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
+function sendWsp(){
+  const lines=cart.map(i=>`• ${i.name} x${i.qty} = ${formatPrice(i.price*i.qty)}`).join('%0A');
+  const msg=`Hola Green Witch! Quiero hacer un pedido:%0A%0A${lines}%0A%0ATotal: ${formatPrice(getTotal())}%0A%0A¿Cómo coordino el pago?`;
+  window.open(`https://wa.me/5492234239776?text=${msg}`,'_blank');
+}
+async function payWithMercadoPago(btn){
+  if(!cart.length)return;
+  const originalText=btn.textContent;
+  btn.disabled=true;btn.textContent='Redirigiendo a Mercado Pago...';
+  try{
+    const items=cart.map(i=>({title:i.name,quantity:i.qty,unit_price:i.price}));
+    const res=await fetch('/api/create-preference',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})});
+    if(!res.ok)throw new Error('Error al crear la preferencia de pago');
+    const data=await res.json();
+    const checkoutUrl=data.sandbox_init_point||data.init_point;
+    if(!checkoutUrl)throw new Error('No se recibió URL de pago');
+    window.location.href=checkoutUrl;
+  }catch(err){console.error(err);showToast('No se pudo iniciar el pago. Probá de nuevo o usá otro medio.');btn.disabled=false;btn.textContent=originalText;}
+}
 
-  function updateStats() {
-    document.getElementById('statTotal').textContent = allProducts.length;
-    document.getElementById('statActive').textContent = allProducts.filter(p => p.active).length;
-    const cats = new Set(allProducts.map(p => p.category));
-    document.getElementById('statCats').textContent = cats.size;
-  }
+// ===== FAQ & TIPS (estáticos — renderizados inline, sin fetch) =====
+const faqData=[
+  {q:'¿Cuánto tarda el envío?',r:'Los envíos se realizan por correo o encomienda. El tiempo estimado es de 3 a 5 días hábiles según la provincia. Te avisamos por WhatsApp cuando despachamos.'},
+  {q:'¿Puedo retirar en el local?',r:'¡Claro! Podés reservar tu pedido online y retirarlo en Tejedor 1985. Te esperamos de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs.'},
+  {q:'¿Cómo pago por transferencia?',r:'Al elegir esa opción te mostramos el CBU. Hacés la transferencia, nos mandás el comprobante por WhatsApp y despachamos el pedido en el día.'},
+  {q:'¿Los productos únicos se reponen?',r:'No — eso es lo que los hace especiales. Cuando una pieza dice "Única", si se vende ya no está más. Por eso vale la pena no esperar.'},
+];
+const tipsData=[
+  {emoji:'💧',titulo:'Riego perfecto',texto:'La mayoría de los problemas en cultivo vienen del exceso de agua. Dejá que los primeros 2-3 cm de sustrato estén secos antes de volver a regar.'},
+  {emoji:'🌡️',titulo:'Temperatura ideal',texto:'Entre 20°C y 28°C en el día y no menos de 16°C en la noche. Un termómetro digital te cambia la vida en el grow.'},
+  {emoji:'🧪',titulo:'pH del agua',texto:'El rango óptimo es entre 6.0 y 7.0 para tierra. Fuera de ese rango los nutrientes no se absorben bien aunque los apliques correctamente.'},
+];
+function renderFaq(){
+  const g=document.getElementById('faqList');if(!g)return;
+  g.innerHTML=faqData.map((f,i)=>`<div class="faq-item" id="faq${i}"><div class="faq-pregunta" onclick="toggleFaq(${i})">${f.q}<span class="faq-arrow">▼</span></div><div class="faq-respuesta"><p>${f.r}</p></div></div>`).join('');
+}
+function toggleFaq(i){document.querySelectorAll('.faq-item').forEach((el,idx)=>{if(idx===i)el.classList.toggle('open');else el.classList.remove('open');});}
+function renderTips(){
+  ['tipsGrid','tipsGrid2'].forEach(id=>{
+    const g=document.getElementById(id);if(!g)return;
+    g.innerHTML=tipsData.map(t=>`<div class="tip-card"><div class="tip-emoji">${t.emoji}</div><div><div class="tip-titulo">${t.titulo}</div><div class="tip-texto">${t.texto}</div></div></div>`).join('');
+  });
+}
 
-  function filterProducts(query) {
-    const q = query.toLowerCase();
-    const filtered = allProducts.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q)
-    );
-    renderTable(filtered);
-  }
+// ===== UTILS =====
+function esc(str){
+  if(!str)return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');}
+function closeMenu(){document.getElementById('hamburger').classList.remove('open');document.getElementById('mobileMenu').classList.remove('open');}
 
-  // ===== PANEL =====
-  function openPanel(product = null) {
-    document.getElementById('overlay').classList.add('open');
-    document.getElementById('panel').classList.add('open');
-    document.getElementById('uploadStatus').textContent = '';
-    if (product) {
-      document.getElementById('panelTitle').textContent = 'Editar producto';
-      document.getElementById('editId').value = product.id;
-      document.getElementById('fName').value = product.name;
-      document.getElementById('fCategory').value = product.category;
-      document.getElementById('fPrice').value = product.price;
-      document.getElementById('fStock').value = product.stock ?? 0;
-      document.getElementById('fDesc').value = product.description ?? '';
-      document.getElementById('fEmoji').value = product.emoji ?? '';
-      document.getElementById('fOrigPrice').value = product.original_price ?? '';
-      document.getElementById('fTag').value = product.tag ?? '';
-      document.getElementById('fUnico').checked = product.unico ?? false;
-      document.getElementById('fImg').value = product.img ?? '';
-      previewImg(product.img);
-      if (product.img) {
-        document.getElementById('uploadStatus').textContent = '✓ Foto cargada (tocá para cambiar)';
-        document.getElementById('uploadStatus').style.color = 'var(--green)';
-      }
-    } else {
-      document.getElementById('panelTitle').textContent = 'Nuevo producto';
-      document.getElementById('editId').value = '';
-      document.getElementById('productForm').reset();
-      document.getElementById('fImg').value = '';
-      document.getElementById('imgPreview').classList.remove('show');
-    }
-  }
-
-  function closePanel() {
-    document.getElementById('overlay').classList.remove('open');
-    document.getElementById('panel').classList.remove('open');
-  }
-
-  function previewImg(url) {
-    const img = document.getElementById('imgPreview');
-    if (url && url.startsWith('http')) {
-      img.src = url;
-      img.classList.add('show');
-      img.onerror = () => img.classList.remove('show');
-    } else {
-      img.classList.remove('show');
-    }
-  }
-
-  // ===== SAVE =====
-  async function saveProduct() {
-    const name = document.getElementById('fName').value.trim();
-    const category = document.getElementById('fCategory').value;
-    const price = document.getElementById('fPrice').value;
-    if (!name || !category || !price) {
-      showToast('Completá nombre, categoría y precio', true);
-      return;
-    }
-    const data = {
-      name,
-      category,
-      price: Number(price),
-      stock: Number(document.getElementById('fStock').value) || 0,
-      description: document.getElementById('fDesc').value.trim() || null,
-      emoji: document.getElementById('fEmoji').value.trim() || null,
-      original_price: Number(document.getElementById('fOrigPrice').value) || null,
-      tag: document.getElementById('fTag').value.trim() || null,
-      unico: document.getElementById('fUnico').checked,
-      img: document.getElementById('fImg').value.trim() || null,
-    };
-    const editId = document.getElementById('editId').value;
-    try {
-      document.getElementById('saveBtn').textContent = 'Guardando...';
-      document.getElementById('saveBtn').disabled = true;
-      let res;
-      if (editId) {
-        res = await fetch(`${API}?id=eq.${editId}`, {
-          method: 'PATCH', headers: HEADERS, body: JSON.stringify(data)
-        });
-      } else {
-        res = await fetch(API, {
-          method: 'POST', headers: HEADERS, body: JSON.stringify(data)
-        });
-      }
-      if (!res.ok) throw new Error('Error al guardar');
-      showToast(editId ? 'Producto actualizado' : 'Producto creado');
-      closePanel();
-      loadProducts();
-    } catch (e) {
-      showToast(e.message, true);
-    } finally {
-      document.getElementById('saveBtn').textContent = 'Guardar';
-      document.getElementById('saveBtn').disabled = false;
-    }
-  }
-
-  // ===== TOGGLE ACTIVE =====
-  async function toggleActive(id, currentState) {
-    try {
-      const res = await fetch(`${API}?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: HEADERS,
-        body: JSON.stringify({ active: !currentState })
-      });
-      if (!res.ok) throw new Error('Error');
-      showToast(currentState ? 'Producto desactivado' : 'Producto activado');
-      loadProducts();
-    } catch (e) {
-      showToast(e.message, true);
-    }
-  }
-
-  // ===== DELETE =====
-  async function deleteProduct(id, name) {
-    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
-    try {
-      const res = await fetch(`${API}?id=eq.${id}`, {
-        method: 'DELETE', headers: HEADERS
-      });
-      if (!res.ok) throw new Error('Error al eliminar');
-      showToast('Producto eliminado');
-      loadProducts();
-    } catch (e) {
-      showToast(e.message, true);
-    }
-  }
-
-  // ===== EDIT =====
-  function editProduct(id) {
-    const product = allProducts.find(p => p.id === id);
-    if (product) openPanel(product);
-  }
-
-  // ===== TOAST =====
-  function showToast(msg, isError = false) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast show${isError ? ' error' : ''}`;
-    setTimeout(() => t.className = 'toast', 3000);
-  }
-
-  // ===== ESCAPE HTML =====
-  function esc(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ===== INIT =====
-  populateCategorySelect();
-  initCategoryModule();
-  loadProducts();
+// ===== INIT =====
+loadProducts();
+renderFaq();
+renderTips();
 </script>
 </body>
 </html>
