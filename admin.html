@@ -19,6 +19,7 @@
       --text: #e8f5e8;
       --text-dim: #8aab8a;
       --white: #fff;
+      --dorado: #C8A84B;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -43,6 +44,7 @@
       color: var(--green);
     }
     header h1 span { color: var(--text-dim); font-weight: 400; }
+    .header-actions { display: flex; gap: 0.5rem; align-items: center; }
     .btn {
       padding: 0.5rem 1rem;
       border: none;
@@ -70,12 +72,42 @@
       border: 1px solid var(--border);
     }
     .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--dorado);
+      border: 1px solid var(--dorado);
+    }
+    .btn-secondary:hover { background: rgba(200,168,75,0.15); }
 
     .container {
       max-width: 1100px;
       margin: 0 auto;
       padding: 1.5rem;
     }
+
+    /* Tabs */
+    .admin-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-tab {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .admin-tab:hover { color: var(--text); }
+    .admin-tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     /* Stats bar */
     .stats {
@@ -283,6 +315,37 @@
     .upload-text strong { color: var(--green); }
     .upload-status { font-size: 0.75rem; margin-top: 0.4rem; color: var(--green); }
 
+    /* Categories management */
+    .cat-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .cat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+    .cat-item-name { font-size: 0.9rem; font-weight: 500; }
+    .cat-item-count { font-size: 0.75rem; color: var(--text-dim); }
+    .cat-item-actions { display: flex; gap: 0.3rem; }
+    .cat-add-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .cat-add-row input { flex: 1; }
+    .cat-locked-notice {
+      background: rgba(200,168,75,0.08);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.82rem;
+      color: var(--dorado);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
     /* Toast */
     .toast {
       position: fixed;
@@ -324,36 +387,58 @@
 
 <header>
   <h1>🌿 Green Witch Grow <span>· Panel Admin</span></h1>
-  <button class="btn btn-primary" onclick="openPanel()">+ Nuevo producto</button>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openPanel()">+ Nuevo producto</button>
+  </div>
 </header>
 
 <div class="container">
-  <div class="stats">
-    <div class="stat-card">
-      <div class="label">Total productos</div>
-      <div class="value" id="statTotal">–</div>
+  <!-- ===== TABS — Productos | Categorías (flag-gated) ===== -->
+  <div class="admin-tabs" id="adminTabs">
+    <button class="admin-tab active" data-tab="products" onclick="switchTab('products')">Productos</button>
+    <!-- Tab de categorías: se muestra solo si canManageCategories = true -->
+  </div>
+
+  <!-- ===== TAB: PRODUCTOS ===== -->
+  <div class="tab-content active" id="tab-products">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Total productos</div>
+        <div class="value" id="statTotal">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Activos</div>
+        <div class="value" id="statActive">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Categorías</div>
+        <div class="value" id="statCats">–</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="label">Activos</div>
-      <div class="value" id="statActive">–</div>
+
+    <div class="products-header">
+      <h2>Productos</h2>
+      <input type="text" class="search-box" placeholder="Buscar producto..." oninput="filterProducts(this.value)">
     </div>
-    <div class="stat-card">
-      <div class="label">Categorías</div>
-      <div class="value" id="statCats">–</div>
+
+    <div id="tableContainer">
+      <div class="loading">Cargando productos...</div>
     </div>
   </div>
 
-  <div class="products-header">
-    <h2>Productos</h2>
-    <input type="text" class="search-box" placeholder="Buscar producto..." oninput="filterProducts(this.value)">
-  </div>
+  <!-- ===== TAB: CATEGORÍAS (hidden by default) ===== -->
+  <div class="tab-content" id="tab-categories">
+    <div class="products-header" style="margin-bottom:1.5rem">
+      <h2>Gestión de Categorías</h2>
+    </div>
 
-  <div id="tableContainer">
-    <div class="loading">Cargando productos...</div>
+    <div id="catManager">
+      <!-- Populated by JS when canManageCategories = true -->
+    </div>
   </div>
 </div>
 
-<!-- Panel lateral -->
+<!-- Panel lateral — Producto -->
 <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
 <div class="panel" id="panel">
   <div class="panel-header">
@@ -371,11 +456,7 @@
         <label>Categoría *</label>
         <select id="fCategory" required>
           <option value="">Seleccionar...</option>
-          <option value="Parafernalia">Parafernalia</option>
-          <option value="Insumos">Insumos</option>
-          <option value="Kits">Kits</option>
-          <option value="Cultivo">Cultivo</option>
-          <option value="Consultoría">Consultoría</option>
+          <!-- Options populated dynamically from categories list -->
         </select>
       </div>
       <div class="form-row">
@@ -432,6 +513,46 @@
   </div>
 </div>
 
+<!-- Panel lateral — Categoría -->
+<div class="panel-overlay" id="catOverlay" onclick="closeCatPanel()"></div>
+<div class="panel" id="catPanel">
+  <div class="panel-header">
+    <h3 id="catPanelTitle">Nueva categoría</h3>
+    <button class="btn btn-ghost btn-sm" onclick="closeCatPanel()">✕</button>
+  </div>
+  <div class="panel-body">
+    <form id="catForm" onsubmit="return false;">
+      <input type="hidden" id="catEditId">
+      <div class="form-group">
+        <label>Nombre de la categoría *</label>
+        <input type="text" id="catFName" required placeholder="Ej: Fertilizantes">
+      </div>
+      <div class="form-group">
+        <label>Slug (identificador interno)</label>
+        <input type="text" id="catFSlug" placeholder="Se genera automáticamente">
+      </div>
+      <div class="form-group">
+        <label>Categoría padre (opcional)</label>
+        <select id="catFParent">
+          <option value="">Ninguna — categoría principal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Emoji</label>
+        <input type="text" id="catFEmoji" placeholder="🌿" maxlength="4">
+      </div>
+      <div class="form-group">
+        <label>Orden de aparición</label>
+        <input type="number" id="catFOrder" placeholder="0" min="0">
+      </div>
+    </form>
+  </div>
+  <div class="panel-footer">
+    <button class="btn btn-ghost" onclick="closeCatPanel()">Cancelar</button>
+    <button class="btn btn-primary" id="catSaveBtn" onclick="saveCategory()">Guardar</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -447,6 +568,175 @@
   };
 
   let allProducts = [];
+
+  // =====================================================
+  // FEATURE FLAG: Category Management
+  // Set to true to enable category CRUD from admin panel.
+  // When true, a "Categorías" tab appears and users can
+  // create/edit/reorder/delete categories + subcategories.
+  // =====================================================
+  const canManageCategories = false;
+
+  // Default categories (used when canManageCategories = false)
+  const DEFAULT_CATEGORIES = [
+    { id: 'parafernalia', name: 'Parafernalia', slug: 'parafernalia', emoji: '🌿', order: 0, parent: null },
+    { id: 'insumos', name: 'Insumos', slug: 'insumos', emoji: '📦', order: 1, parent: null },
+    { id: 'kits', name: 'Kits', slug: 'kits', emoji: '🎁', order: 2, parent: null },
+    { id: 'cultivo', name: 'Cultivo', slug: 'cultivo', emoji: '🌱', order: 3, parent: null },
+    { id: 'consultoria', name: 'Consultoría', slug: 'consultoria', emoji: '💬', order: 4, parent: null },
+  ];
+
+  // Runtime categories list — populated from DB or defaults
+  let categories = [...DEFAULT_CATEGORIES];
+
+  // ===== CATEGORY MODULE =====
+  function initCategoryModule() {
+    if (!canManageCategories) return;
+
+    // Show the categories tab
+    const tabsEl = document.getElementById('adminTabs');
+    const catTab = document.createElement('button');
+    catTab.className = 'admin-tab';
+    catTab.dataset.tab = 'categories';
+    catTab.textContent = 'Categorías';
+    catTab.onclick = () => switchTab('categories');
+    tabsEl.appendChild(catTab);
+
+    loadCategories();
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tabId));
+  }
+
+  async function loadCategories() {
+    // TODO: When categories table exists in Supabase, fetch from there
+    // const res = await fetch(`${SUPABASE_URL}/rest/v1/categories?select=*&order=order.asc`, { headers: HEADERS });
+    // categories = await res.json();
+    renderCategoryManager();
+  }
+
+  function renderCategoryManager() {
+    const container = document.getElementById('catManager');
+    if (!canManageCategories) {
+      container.innerHTML = `
+        <div class="cat-locked-notice">
+          🔒 La gestión de categorías no está habilitada.<br>
+          Contactá al administrador para activar esta función.
+        </div>`;
+      return;
+    }
+
+    const productCounts = {};
+    allProducts.forEach(p => {
+      productCounts[p.category] = (productCounts[p.category] || 0) + 1;
+    });
+
+    container.innerHTML = `
+      <div class="cat-add-row">
+        <input type="text" class="search-box" id="quickCatName" placeholder="Nombre de nueva categoría..." style="width:100%">
+        <button class="btn btn-primary" onclick="quickAddCategory()">+ Agregar</button>
+      </div>
+      <div class="cat-list">
+        ${categories.map(c => `
+          <div class="cat-item">
+            <div>
+              <span style="margin-right:0.4rem">${c.emoji || ''}</span>
+              <span class="cat-item-name">${esc(c.name)}</span>
+              ${c.parent ? `<span style="font-size:0.7rem;color:var(--text-dim);margin-left:0.5rem">↳ sub de ${esc(c.parent)}</span>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <span class="cat-item-count">${productCounts[c.name] || 0} productos</span>
+              <div class="cat-item-actions">
+                <button class="btn btn-ghost btn-sm" onclick="editCategory('${c.id}')">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCategory('${c.id}','${esc(c.name)}')">Borrar</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function quickAddCategory() {
+    const name = document.getElementById('quickCatName').value.trim();
+    if (!name) return;
+    const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+    categories.push({ id: 'cat_' + Date.now(), name, slug, emoji: '📂', order: categories.length, parent: null });
+    document.getElementById('quickCatName').value = '';
+    populateCategorySelect();
+    renderCategoryManager();
+    showToast('Categoría agregada');
+    // TODO: persist to Supabase categories table
+  }
+
+  function editCategory(id) {
+    const cat = categories.find(c => c.id === id);
+    if (!cat) return;
+    document.getElementById('catPanelTitle').textContent = 'Editar categoría';
+    document.getElementById('catEditId').value = cat.id;
+    document.getElementById('catFName').value = cat.name;
+    document.getElementById('catFSlug').value = cat.slug || '';
+    document.getElementById('catFEmoji').value = cat.emoji || '';
+    document.getElementById('catFOrder').value = cat.order || 0;
+    // Populate parent select excluding self
+    const parentSel = document.getElementById('catFParent');
+    parentSel.innerHTML = '<option value="">Ninguna — categoría principal</option>' +
+      categories.filter(c => c.id !== id).map(c => `<option value="${c.name}" ${cat.parent === c.name ? 'selected' : ''}>${c.name}</option>`).join('');
+    document.getElementById('catOverlay').classList.add('open');
+    document.getElementById('catPanel').classList.add('open');
+  }
+
+  function closeCatPanel() {
+    document.getElementById('catOverlay').classList.remove('open');
+    document.getElementById('catPanel').classList.remove('open');
+  }
+
+  function saveCategory() {
+    const id = document.getElementById('catEditId').value;
+    const name = document.getElementById('catFName').value.trim();
+    if (!name) { showToast('Ingresá un nombre', true); return; }
+    const slug = document.getElementById('catFSlug').value.trim() || name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+    const emoji = document.getElementById('catFEmoji').value.trim() || '📂';
+    const order = Number(document.getElementById('catFOrder').value) || 0;
+    const parent = document.getElementById('catFParent').value || null;
+
+    if (id) {
+      const idx = categories.findIndex(c => c.id === id);
+      if (idx >= 0) categories[idx] = { ...categories[idx], name, slug, emoji, order, parent };
+    } else {
+      categories.push({ id: 'cat_' + Date.now(), name, slug, emoji, order, parent });
+    }
+    populateCategorySelect();
+    renderCategoryManager();
+    closeCatPanel();
+    showToast(id ? 'Categoría actualizada' : 'Categoría creada');
+    // TODO: persist to Supabase categories table
+  }
+
+  function deleteCategory(id, name) {
+    const count = allProducts.filter(p => p.category === name).length;
+    if (count > 0) {
+      showToast(`No se puede borrar "${name}" — tiene ${count} productos`, true);
+      return;
+    }
+    if (!confirm(`¿Eliminar la categoría "${name}"?`)) return;
+    categories = categories.filter(c => c.id !== id);
+    populateCategorySelect();
+    renderCategoryManager();
+    showToast('Categoría eliminada');
+    // TODO: persist to Supabase
+  }
+
+  // Populate the category <select> in the product form
+  function populateCategorySelect() {
+    const sel = document.getElementById('fCategory');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Seleccionar...</option>' +
+      categories.map(c => `<option value="${c.name}">${c.emoji || ''} ${c.name}</option>`).join('');
+    if (current) sel.value = current;
+  }
 
   // ===== FILE UPLOAD =====
   const uploadArea = document.getElementById('uploadArea');
@@ -509,6 +799,7 @@
       allProducts = await res.json();
       renderTable(allProducts);
       updateStats();
+      if (canManageCategories) renderCategoryManager();
     } catch (e) {
       document.getElementById('tableContainer').innerHTML =
         `<div class="empty-state">Error al cargar: ${e.message}</div>`;
@@ -721,6 +1012,8 @@
   }
 
   // ===== INIT =====
+  populateCategorySelect();
+  initCategoryModule();
   loadProducts();
 </script>
 </body>
