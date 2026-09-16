@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Green Witch Grow · Tienda Online</title>
+<meta name="description" content="Green Witch Grow — Grow Shop en Mar del Plata. Fertilizantes, insecticidas, sustrato, parafernalia y accesorios. Envíos a todo el país.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -23,6 +26,8 @@
 }
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);overflow-x:hidden}
+
+/* ===== NAV ===== */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   background:rgba(13,13,13,0.92);backdrop-filter:blur(16px);
@@ -42,12 +47,16 @@ nav{
 .cart-count{position:absolute;top:-2px;right:-4px;background:var(--verde-neon);color:var(--negro);font-size:0.55rem;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:0.5rem;flex-direction:column;gap:5px}
 .hamburger span{display:block;width:22px;height:2px;background:var(--texto);border-radius:2px;transition:all .3s}
+
+/* ===== BANNER ===== */
 .banner{
   background:linear-gradient(90deg,var(--verde-oscuro),var(--verde),var(--verde-oscuro));
   text-align:center;padding:0.6rem 1rem;
   font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--crema);font-weight:500;
   margin-top:64px;
 }
+
+/* ===== HERO ===== */
 .hero{
   min-height:80vh;display:flex;align-items:center;
   padding:4rem 2rem;
@@ -62,21 +71,32 @@ nav{
   background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232D5A27' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   pointer-events:none;
 }
-.hero-inner{max-width:1100px;margin:0 auto;width:100%;position:relative}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%;position:relative;display:flex;align-items:center;gap:3rem}
+.hero-content{flex:1}
 .hero-eyebrow{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.2rem;font-weight:500}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.2rem);font-weight:700;line-height:1.1;color:var(--crema);margin-bottom:1.2rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;line-height:1.15;color:var(--crema);margin-bottom:1.2rem}
 .hero h1 em{font-style:italic;color:var(--verde-neon)}
 .hero-sub{font-size:0.9rem;color:var(--texto-muted);line-height:1.8;max-width:580px;font-weight:300;margin-bottom:2.5rem}
+.hero-logo{flex-shrink:0;width:340px;display:flex;align-items:center;justify-content:center;pointer-events:none;position:relative}
+.hero-logo img{width:100%;height:auto;filter:drop-shadow(0 0 60px rgba(126,200,80,0.3)) drop-shadow(0 0 120px rgba(126,200,80,0.15));opacity:0.85}
+.hero-bg-left{position:absolute;left:-3rem;bottom:-4rem;width:200px;opacity:0.07;pointer-events:none;transform:scaleX(-1)}
+.hero-bg-left img{width:100%;height:auto}
+
+/* ===== BUTTONS ===== */
 .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.8rem;border-radius:2px;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .25s;font-family:'Inter',sans-serif;font-weight:600;text-decoration:none}
 .btn-primary{background:var(--verde-neon);color:var(--negro)}
 .btn-primary:hover{background:#96D96A;transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--crema);border:1px solid var(--borde)}
 .btn-ghost:hover{border-color:var(--verde-neon);color:var(--verde-neon)}
+
+/* ===== SECTIONS ===== */
 #destacados{padding:5rem 2rem;background:var(--verde-oscuro)}
 .section-inner{max-width:1100px;margin:0 auto}
 .section-eyebrow{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:0.6rem;font-weight:500}
 .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:400;color:var(--crema);margin-bottom:0.5rem;line-height:1.2}
 .section-sub{font-size:0.82rem;color:var(--texto-muted);margin-bottom:3rem;font-weight:300}
+
+/* ===== PRODUCTS GRID ===== */
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
 .product-card{
   background:var(--negro);border:1px solid var(--borde);border-radius:4px;
@@ -107,6 +127,8 @@ nav{
   cursor:pointer;border-radius:2px;transition:background .2s;font-family:'Inter',sans-serif;font-weight:600;
 }
 .add-btn:hover{background:var(--verde-neon);color:var(--negro)}
+
+/* ===== INSUMOS ===== */
 #insumos{padding:5rem 2rem;background:var(--negro)}
 .insumos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
 .insumo-card{
@@ -118,6 +140,8 @@ nav{
 .insumo-name{font-size:0.85rem;font-weight:500;color:var(--crema);margin-bottom:0.2rem}
 .insumo-precio{font-size:0.8rem;color:var(--verde-neon);font-weight:600}
 .insumo-stock{font-size:0.62rem;color:var(--texto-muted);letter-spacing:1px;text-transform:uppercase}
+
+/* ===== KITS ===== */
 #kits{padding:5rem 2rem;background:linear-gradient(180deg,var(--verde-oscuro) 0%,var(--negro) 100%)}
 .kits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
 .kit-card{
@@ -138,6 +162,8 @@ nav{
 .kit-original{font-size:0.82rem;color:var(--texto-muted);text-decoration:line-through}
 .kit-precio{font-size:1.1rem;font-weight:700;color:var(--dorado)}
 .kit-ahorro{font-size:0.62rem;background:rgba(200,168,75,0.15);color:var(--dorado);padding:0.15rem 0.5rem;border-radius:2px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+
+/* ===== CONSULTORIA ===== */
 #consultoria{padding:5rem 2rem;background:var(--negro)}
 .consul-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
 .consul-sub{font-size:0.88rem;color:var(--texto-muted);line-height:1.8;margin-bottom:2rem}
@@ -163,13 +189,18 @@ nav{
 .tip-emoji{font-size:1.5rem;flex-shrink:0;margin-top:2px}
 .tip-titulo{font-size:0.85rem;font-weight:600;color:var(--crema);margin-bottom:0.3rem}
 .tip-texto{font-size:0.78rem;color:var(--texto-muted);line-height:1.6}
+
+/* ===== WSP CTA ===== */
 .wsp-cta{
   padding:3rem 2rem;
   background:linear-gradient(135deg,var(--verde-oscuro),#0d1a0d);
   text-align:center;border-top:1px solid var(--borde);
+  position:relative;overflow:hidden;
 }
-.wsp-cta h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--crema);margin-bottom:0.6rem}
-.wsp-cta p{font-size:0.85rem;color:var(--texto-muted);margin-bottom:1.5rem}
+.wsp-cta-brujita{position:absolute;left:2rem;top:50%;transform:translateY(-50%);width:120px;opacity:0.12;pointer-events:none}
+.wsp-cta-brujita img{width:100%;height:auto}
+.wsp-cta h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--crema);margin-bottom:0.6rem;position:relative}
+.wsp-cta p{font-size:0.85rem;color:var(--texto-muted);margin-bottom:1.5rem;position:relative}
 .wsp-btn{
   display:inline-flex;align-items:center;gap:0.7rem;
   background:#25D366;color:white;padding:0.9rem 2rem;
@@ -177,6 +208,8 @@ nav{
   cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:background .2s;text-decoration:none;
 }
 .wsp-btn:hover{background:#1aad50}
+
+/* ===== CART ===== */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
 .cart-overlay.open{opacity:1;pointer-events:all}
 .cart-sidebar{
@@ -205,6 +238,8 @@ nav{
 .pay-mp{background:rgba(255,255,255,0.06);color:var(--crema);border:1px solid var(--borde)}
 .pay-mp:hover{border-color:var(--verde-neon)}
 .transfer-note{font-size:0.65rem;color:var(--dorado);text-align:center;margin-top:0.3rem;letter-spacing:1px}
+
+/* ===== PRODUCT PANEL ===== */
 .panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s}
 .panel-overlay.open{opacity:1;pointer-events:all}
 .product-panel{
@@ -236,24 +271,48 @@ nav{
 .panel-wsp{width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:none;border:1px solid #25D366;color:#25D366;padding:0.75rem;border-radius:2px;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s}
 .panel-wsp:hover{background:#25D366;color:white}
 .unico-aviso{background:rgba(200,168,75,0.1);border:1px solid var(--dorado);border-radius:2px;padding:0.7rem 1rem;font-size:0.75rem;color:var(--dorado);margin-bottom:1rem;text-align:center;letter-spacing:1px}
-footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px solid var(--borde)}
-.footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--verde-neon);margin-bottom:0.3rem}
+
+/* ===== FOOTER ===== */
+footer{background:#070707;padding:3rem 2rem 4rem;text-align:center;border-top:1px solid var(--borde);position:relative;overflow:hidden}
+.footer-brujita{position:absolute;bottom:-20px;right:1.5rem;width:180px;opacity:0.2;pointer-events:none}
+.footer-brujita img{width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(126,200,80,0.2))}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--verde-neon);margin-bottom:0.3rem;position:relative}
 .footer-sub{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--texto-muted);margin-bottom:1.5rem}
 .footer-info{font-size:0.78rem;color:var(--texto-muted);line-height:2}
 .footer-info a{color:var(--verde-neon);text-decoration:none}
 .footer-copy{margin-top:2rem;font-size:0.65rem;color:#333;letter-spacing:1px}
+
+/* ===== TOAST ===== */
 .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--verde-neon);color:var(--negro);padding:0.7rem 1.4rem;border-radius:2px;font-size:0.78rem;letter-spacing:1px;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;font-weight:600}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== MOBILE MENU ===== */
 .mobile-menu{position:fixed;top:64px;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--borde);z-index:99;padding:1.5rem;display:none;flex-direction:column}
 .mobile-menu.open{display:flex}
 .mobile-menu a{font-size:0.85rem;color:var(--texto);text-decoration:none;letter-spacing:2px;text-transform:uppercase;padding:0.9rem 0;border-bottom:1px solid var(--borde);display:block}
 .mobile-menu a:last-child{border-bottom:none}
+
+/* ===== LOAD MORE BUTTON ===== */
+.load-more-wrap{text-align:center;margin-top:2rem}
+.load-more-btn{background:transparent;color:var(--verde-neon);border:1px solid var(--verde);padding:0.7rem 2rem;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;font-weight:600;transition:all .2s}
+.load-more-btn:hover{background:var(--verde);color:var(--crema)}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton{background:linear-gradient(90deg,var(--verde-oscuro) 25%,#243d24 50%,var(--verde-oscuro) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{height:320px;border-radius:4px}
+
+/* ===== RESPONSIVE ===== */
 @media(max-width:768px){
   nav{padding:0 1rem}
   .nav-links{display:none}
   .hamburger{display:flex}
   .hero{padding:3rem 1.2rem;min-height:auto}
-  .hero h1{font-size:2.4rem}
+  .hero h1{font-size:1.9rem}
+  .hero-inner{flex-direction:column;gap:0}
+  .hero-logo{width:180px;margin:0 auto 1.5rem;order:-1}
+  .hero-logo img{opacity:0.9}
+  .hero-bg-left{display:none}
   .consul-grid{grid-template-columns:1fr}
   .products-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem}
   .insumos-grid{grid-template-columns:1fr 1fr}
@@ -261,12 +320,15 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
   section{padding:3rem 1.2rem}
   #destacados,#insumos,#kits,#consultoria{padding:3rem 1.2rem}
   .product-panel{width:100vw}
+  .footer-brujita{width:120px;right:0.5rem;opacity:0.15}
 }
 </style>
 </head>
 <body>
+
+<!-- ===== NAV — sin emoji de hoja ===== -->
 <nav>
-  <div class="nav-logo">🌿 Green Witch Grow<span>Grow Shop · Mar del Plata</span></div>
+  <div class="nav-logo">Green Witch Grow<span>Grow Shop · Mar del Plata</span></div>
   <ul class="nav-links">
     <li><a href="#destacados">Parafernalia</a></li>
     <li><a href="#insumos">Insumos</a></li>
@@ -279,32 +341,62 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
   </div>
 </nav>
+
 <div class="mobile-menu" id="mobileMenu">
   <a href="#destacados" onclick="closeMenu()">Parafernalia & Diseño</a>
   <a href="#insumos" onclick="closeMenu()">Insumos de Diario</a>
   <a href="#kits" onclick="closeMenu()">🔥 Kits con Descuento</a>
   <a href="#consultoria" onclick="closeMenu()">Consultoría & Tips</a>
 </div>
-<div class="banner">🌱 Envíos a todo el país · 10% de descuento pagando por transferencia</div>
+
+<!-- ===== BANNER — sin promo 10% ===== -->
+<div class="banner">🌱 Envíos a todo el país · Atención por WhatsApp</div>
+
+<!-- ===== HERO — texto actualizado + logo brujita ===== -->
 <section class="hero">
+  <!-- Brujita decorativa izquierda (espejada, muy sutil) -->
+  <div class="hero-bg-left" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-footer.webp" type="image/webp">
+      <img src="assets/brujita-footer.png" alt="" width="200" height="356" loading="lazy" decoding="async">
+    </picture>
+  </div>
   <div class="hero-inner">
-    <div class="hero-eyebrow">Grow Shop de barrio · Todo para tu cultivo</div>
-    <h1>Cultivá con <em>estilo.</em><br>Comprá donde y cuando quieras, de forma segura.</h1>
-    <p class="hero-sub">Parafernalia de diseño único, insumos de diario y el mejor asesoramiento de Mar del Plata — ahora en tu pantalla, las 24 horas.</p>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap">
-      <a href="#destacados" class="btn btn-primary">Ver productos</a>
-      <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">Consultar por WhatsApp</a>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Grow Shop de barrio · Todo para tu cultivo</div>
+      <h1>Cultivá con <em>nosotros.</em><br>Comprá donde y cuando quieras, de forma segura.</h1>
+      <p class="hero-sub">Fertilizantes, insecticidas, sustrato... todo lo necesario para un cultivo sano y fuerte. Parafernalia, tabaco y accesorios para el fumador.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="#destacados" class="btn btn-primary">Ver productos</a>
+        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">Consultar por WhatsApp</a>
+      </div>
+    </div>
+    <!-- Logo Brujita — decorativo -->
+    <div class="hero-logo" aria-hidden="true">
+      <picture>
+        <source srcset="assets/brujita.webp" type="image/webp">
+        <img src="assets/brujita.png" alt="" width="600" height="1067" loading="eager" decoding="async">
+      </picture>
     </div>
   </div>
 </section>
+
+<!-- ===== PARAFERNALIA ===== -->
 <section id="destacados">
   <div class="section-inner">
     <div class="section-eyebrow">Parafernalia & Diseño</div>
     <h2 class="section-title">Piezas únicas que no encontrás en otro lugar</h2>
     <p class="section-sub">Cada pieza es seleccionada a mano. Cuando se vende, se vende — no hay reposición.</p>
-    <div class="products-grid" id="paraGrid"></div>
+    <div class="products-grid" id="paraGrid">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
   </div>
 </section>
+
+<!-- ===== INSUMOS ===== -->
 <section id="insumos">
   <div class="section-inner">
     <div class="section-eyebrow">Insumos de Diario</div>
@@ -313,6 +405,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     <div class="insumos-grid" id="insumosGrid"></div>
   </div>
 </section>
+
+<!-- ===== KITS ===== -->
 <section id="kits">
   <div class="section-inner">
     <div class="section-eyebrow">🔥 Kits con Descuento</div>
@@ -321,6 +415,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     <div class="kits-grid" id="kitsGrid"></div>
   </div>
 </section>
+
+<!-- ===== CULTIVO ===== -->
 <section id="cultivo" style="padding:5rem 2rem;background:linear-gradient(180deg,var(--negro) 0%,var(--verde-oscuro) 100%)">
   <div class="section-inner">
     <div class="section-eyebrow">Consultoría del Cultivo</div>
@@ -340,6 +436,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem" id="tipsGrid"></div>
   </div>
 </section>
+
+<!-- ===== CONSULTORIA ===== -->
 <section id="consultoria" style="padding:5rem 2rem;background:var(--negro)">
   <div class="section-inner">
     <div class="section-eyebrow">Preguntas Frecuentes</div>
@@ -356,6 +454,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     </div>
   </div>
 </section>
+
+<!-- ===== ENTREGA ===== -->
 <section style="padding:5rem 2rem;background:var(--negro)">
   <div class="section-inner">
     <div class="section-eyebrow">Entrega en Mar del Plata</div>
@@ -387,16 +487,32 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     </div>
   </div>
 </section>
+
+<!-- ===== WSP CTA ===== -->
 <div class="wsp-cta">
+  <div class="wsp-cta-brujita" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-footer.webp" type="image/webp">
+      <img src="assets/brujita-footer.png" alt="" width="200" height="356" loading="lazy" decoding="async">
+    </picture>
+  </div>
   <h3>¿Preferís hablar con nosotros?</h3>
   <p>Estamos en el local de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs. También por WhatsApp.</p>
-  <a href="https://wa.me/5492234239776" target="_blank" class="wsp-btn">
+  <a href="https://wa.me/5492234239776" target="_blank" class="wsp-btn" style="position:relative">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.525 3.48 11.815 11.815 0 0012.05 0z"/></svg>
     Escribinos ahora
   </a>
 </div>
+
+<!-- ===== FOOTER — con brujita decorativa ===== -->
 <footer>
-  <a href="admin.html" class="footer-logo" style="text-decoration:none;cursor:default">🌿 Green Witch Grow</a>
+  <div class="footer-brujita" aria-hidden="true">
+    <picture>
+      <source srcset="assets/brujita-hero.webp" type="image/webp">
+      <img src="assets/brujita-hero.png" alt="" width="400" height="711" loading="lazy" decoding="async">
+    </picture>
+  </div>
+  <a href="admin.html" class="footer-logo" style="text-decoration:none;cursor:default">Green Witch Grow</a>
   <div class="footer-sub">Grow Shop · Mar del Plata</div>
   <div class="footer-info">
     <p>📍 Tejedor 1985, Mar del Plata</p>
@@ -406,6 +522,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
   </div>
   <div class="footer-copy">© 2026 Green Witch Grow · Todos los derechos reservados</div>
 </footer>
+
+<!-- ===== CART SIDEBAR ===== -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header"><h3>Tu carrito</h3><button class="cart-close" onclick="toggleCart()">✕</button></div>
@@ -420,6 +538,8 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
     <div class="transfer-note">💡 Pagando por transferencia ahorrás el 10%</div>
   </div>
 </div>
+
+<!-- ===== PRODUCT PANEL ===== -->
 <div class="panel-overlay" id="panelOverlay" onclick="if(event.target.id==='panelOverlay')closePanel()"></div>
 <div class="product-panel" id="productPanel">
   <div class="panel-header">
@@ -440,6 +560,7 @@ footer{background:#070707;padding:3rem 2rem;text-align:center;border-top:1px sol
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
 // ===== SUPABASE =====
 const SB_URL='https://vsltrtouczsfexynzfhr.supabase.co';
@@ -451,6 +572,11 @@ let allProducts=[];
 let openProduct=null;
 let cart=[];
 
+// ===== PROGRESSIVE RENDERING CONFIG =====
+const ITEMS_PER_PAGE = 12;
+let paraPage = 0;
+let insumosPage = 0;
+
 async function loadProducts(){
   try{
     const r=await fetch(`${SB_API}?select=*&active=eq.true&order=created_at.asc`,{headers:SB_H});
@@ -460,8 +586,8 @@ async function loadProducts(){
     const insumos=allProducts.filter(p=>p.category==='Insumos');
     const kits=allProducts.filter(p=>p.category==='Kits');
     const cultivo=allProducts.filter(p=>p.category==='Cultivo');
-    renderPara(para);
-    renderInsumos(insumos);
+    renderParaPaginated(para);
+    renderInsumosPaginated(insumos);
     renderKits(kits);
     renderCultivoKits(cultivo);
   }catch(e){console.error('Error cargando productos:',e)}
@@ -469,13 +595,45 @@ async function loadProducts(){
 
 function formatPrice(p){return '$'+Number(p).toLocaleString('es-AR')}
 
-function renderPara(items){
+// ===== OPTIMIZED IMAGE HELPER =====
+function productImg(src, alt, lazy){
+  if(!src) return '';
+  const loading = lazy ? 'loading="lazy"' : '';
+  // If Supabase Storage, append transform params for WebP + resize
+  if(src.includes('supabase.co/storage')){
+    const small = src.includes('?') ? src+'&width=400&format=webp' : src+'?width=400&format=webp';
+    const medium = src.includes('?') ? src+'&width=600&format=webp' : src+'?width=600&format=webp';
+    return `<img src="${small}" srcset="${small} 400w, ${medium} 600w" sizes="(max-width:768px) 50vw, 280px" alt="${esc(alt)}" ${loading} decoding="async">`;
+  }
+  return `<img src="${src}" alt="${esc(alt)}" ${loading} decoding="async">`;
+}
+
+// ===== PARAFERNALIA — PAGINATED =====
+let paraItems = [];
+function renderParaPaginated(items){
+  paraItems = items;
+  paraPage = 0;
   const g=document.getElementById('paraGrid');
   if(!g)return;
-  g.innerHTML=items.map(p=>`
-    <div class="product-card" onclick="openPanel_('${p.id}')">
+  g.innerHTML = '';
+  appendParaPage();
+}
+function appendParaPage(){
+  const g=document.getElementById('paraGrid');
+  const start = paraPage * ITEMS_PER_PAGE;
+  const slice = paraItems.slice(start, start + ITEMS_PER_PAGE);
+  if(!slice.length) return;
+  // Remove existing load-more
+  const existingBtn = g.parentElement.querySelector('.load-more-wrap');
+  if(existingBtn) existingBtn.remove();
+
+  slice.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.onclick = () => openPanel_(p.id);
+    card.innerHTML = `
       <div class="product-img">
-        ${p.img?`<img src="${p.img}" alt="${esc(p.name)}" loading="lazy">`:`<span style="font-size:4rem">${p.emoji||'🌿'}</span>`}
+        ${p.img ? productImg(p.img, p.name, true) : `<span style="font-size:4rem">${p.emoji||'🌿'}</span>`}
         ${p.unico?'<div class="unico-badge">⚡ Único</div>':''}
       </div>
       <div class="product-info">
@@ -485,28 +643,66 @@ function renderPara(items){
           <span class="product-price">${formatPrice(p.price)}</span>
           <button class="add-btn" onclick="event.stopPropagation();quickAdd('${p.id}')">+ Agregar</button>
         </div>
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+    g.appendChild(card);
+  });
+
+  paraPage++;
+  const hasMore = paraPage * ITEMS_PER_PAGE < paraItems.length;
+  if(hasMore){
+    const wrap = document.createElement('div');
+    wrap.className = 'load-more-wrap';
+    wrap.style.gridColumn = '1 / -1';
+    wrap.innerHTML = `<button class="load-more-btn" onclick="appendParaPage()">Ver más productos</button>`;
+    g.appendChild(wrap);
+  }
 }
 
-function renderInsumos(items){
+// ===== INSUMOS — PAGINATED =====
+let insumosItems = [];
+function renderInsumosPaginated(items){
+  insumosItems = items;
+  insumosPage = 0;
   const g=document.getElementById('insumosGrid');
   if(!g)return;
-  g.innerHTML=items.map(p=>{
-    const stockLabel=p.stock<=5?'Últimas unidades':'Stock disponible';
-    return `
-    <div class="insumo-card" onclick="quickAdd('${p.id}')">
+  g.innerHTML = '';
+  appendInsumosPage();
+}
+function appendInsumosPage(){
+  const g=document.getElementById('insumosGrid');
+  const start = insumosPage * ITEMS_PER_PAGE;
+  const slice = insumosItems.slice(start, start + ITEMS_PER_PAGE);
+  if(!slice.length) return;
+  const existingBtn = g.parentElement.querySelector('.load-more-wrap');
+  if(existingBtn) existingBtn.remove();
+
+  slice.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'insumo-card';
+    card.onclick = () => quickAdd(p.id);
+    const stockLabel = p.stock<=5 ? 'Últimas unidades' : 'Stock disponible';
+    card.innerHTML = `
       <div class="insumo-emoji">${p.emoji||'📦'}</div>
       <div class="insumo-info">
         <div class="insumo-name">${esc(p.name)}</div>
         <div class="insumo-precio">${formatPrice(p.price)}</div>
         <div class="insumo-stock">${stockLabel}</div>
-      </div>
-    </div>`;
-  }).join('');
+      </div>`;
+    g.appendChild(card);
+  });
+
+  insumosPage++;
+  const hasMore = insumosPage * ITEMS_PER_PAGE < insumosItems.length;
+  if(hasMore){
+    const wrap = document.createElement('div');
+    wrap.className = 'load-more-wrap';
+    wrap.style.gridColumn = '1 / -1';
+    wrap.innerHTML = `<button class="load-more-btn" onclick="appendInsumosPage()">Ver más insumos</button>`;
+    g.appendChild(wrap);
+  }
 }
 
+// ===== KITS (se mantiene igual — pocas tarjetas) =====
 function renderKits(items){
   const g=document.getElementById('kitsGrid');
   if(!g)return;
@@ -658,7 +854,7 @@ async function payWithMercadoPago(btn){
   }catch(err){console.error(err);showToast('No se pudo iniciar el pago. Probá de nuevo o usá otro medio.');btn.disabled=false;btn.textContent=originalText;}
 }
 
-// ===== FAQ & TIPS (estáticos) =====
+// ===== FAQ & TIPS (estáticos — renderizados inline, sin fetch) =====
 const faqData=[
   {q:'¿Cuánto tarda el envío?',r:'Los envíos se realizan por correo o encomienda. El tiempo estimado es de 3 a 5 días hábiles según la provincia. Te avisamos por WhatsApp cuando despachamos.'},
   {q:'¿Puedo retirar en el local?',r:'¡Claro! Podés reservar tu pedido online y retirarlo en Tejedor 1985. Te esperamos de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs.'},
