@@ -317,6 +317,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
 .buyer-form{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem}
 .buyer-form .f-input{font-size:16px}
 .buyer-note{font-size:0.72rem;color:var(--texto-muted);line-height:1.5;margin-top:0.2rem}
+.ship-note{font-size:0.72rem;color:var(--dorado);line-height:1.5;margin:-0.6rem 0 1rem;text-align:right}
 .pay-mp{background:#009ee3;color:#fff}
 .pay-mp:hover{background:#0087c4}
 .pay-btn:disabled{opacity:0.6;cursor:wait}
@@ -504,12 +505,13 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
   <div class="cart-header"><h3>Tu carrito</h3><button class="cart-close" onclick="toggleCart()">✕</button></div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer" id="cartFooter" style="display:none">
-    <div class="cart-total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <div class="cart-total"><span>Total productos</span><strong id="cartTotal">$0</strong></div>
+    <p class="ship-note">🛵 Envío no incluido · se paga aparte</p>
     <div class="buyer-form" id="buyerForm">
       <input class="f-input" id="bName" type="text" placeholder="Tu nombre" autocomplete="name" maxlength="80">
       <input class="f-input" id="bPhone" type="tel" inputmode="tel" placeholder="Tu WhatsApp (ej: 223 555 1234)" autocomplete="tel" maxlength="30">
       <input class="f-input" id="bEmail" type="email" placeholder="Email (opcional)" autocomplete="email" maxlength="120">
-      <p class="buyer-note">Pagás los productos con Mercado Pago. El envío o retiro lo coordinamos por WhatsApp.</p>
+      <p class="buyer-note">Con Mercado Pago pagás <strong>solo los productos</strong>. El envío se paga aparte: te escribimos por WhatsApp para coordinarlo y pasarte el costo. Si retirás en el local, no tiene costo.</p>
     </div>
     <div class="pay-options">
       <button class="pay-btn pay-mp" id="payMpBtn" onclick="payMP()">💳 Pagar con Mercado Pago</button>
@@ -831,7 +833,7 @@ function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;i
 function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
 function sendWsp(){
   const lines=cart.map(i=>'• '+i.name+' x'+i.qty+' = '+formatPrice(i.price*i.qty)).join('%0A');
-  const msg='Hola Green Witch! Quiero hacer un pedido:%0A%0A'+lines+'%0A%0ATotal: '+formatPrice(getTotal())+'%0A%0A¿Cómo coordino el pago?';
+  const msg='Hola Green Witch! Quiero hacer un pedido:%0A%0A'+lines+'%0A%0ATotal productos: '+formatPrice(getTotal())+' (sin envío)%0A%0A¿Cómo coordino el pago y el envío?';
   window.open('https://wa.me/5492234239776?text='+msg,'_blank');
 }
 
