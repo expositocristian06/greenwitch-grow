@@ -149,7 +149,10 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
   <!-- TAB: PRODUCTS LIST -->
   <div class="tab-content active" id="tab-products">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-      <p style="font-size:0.82rem;color:var(--texto-muted)" id="productCount">Cargando...</p>
+      <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap">
+        <p style="font-size:0.82rem;color:var(--texto-muted)" id="productCount">Cargando...</p>
+        <button type="button" class="edit-btn" id="optBtn" onclick="optimizeAllImages()" title="Achica las fotos pesadas para que la tienda y el panel carguen más rápido">⚡ Optimizar fotos</button>
+      </div>
       <select id="filterCategory" onchange="filterProducts()" style="padding:0.5rem 0.8rem;background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;color:var(--crema);font-size:0.78rem;cursor:pointer">
         <option value="">Todas las categorías</option>
       </select>
@@ -401,7 +404,7 @@ function renderProducts(filter){
   const tbody=document.getElementById('productsBody');
   tbody.innerHTML=filtered.map(p=>`
     <tr>
-      <td><div class="product-thumb">${p.img?`<img src="${esc(p.img)}" alt="">`:(p.emoji||'🌿')}</div></td>
+      <td><div class="product-thumb">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" width="45" height="45">`:(p.emoji||'🌿')}</div></td>
       <td style="font-weight:500;color:var(--crema)">${esc(p.name)}</td>
       <td style="font-size:0.75rem;color:var(--texto-muted)">${esc(p.category)}</td>
       <td style="font-weight:600">$${Number(p.price).toLocaleString('es-AR')}</td>
@@ -536,13 +539,29 @@ function previewImage(input){
   prev.style.display='block';
 }
 
+/* ===== FOTOS: se achican antes de subir (máx 1200px, WebP) ===== */
+const IMG_MAX=1200, IMG_Q=0.82;
+async function compressImage(blob){
+  try{
+    const bmp=await createImageBitmap(blob);
+    const k=Math.min(1,IMG_MAX/Math.max(bmp.width,bmp.height));
+    const w=Math.round(bmp.width*k),h=Math.round(bmp.height*k);
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(bmp,0,0,w,h);
+    if(bmp.close)bmp.close();
+    let out=await new Promise(r=>c.toBlob(r,'image/webp',IMG_Q));
+    if(!out||out.type!=='image/webp') out=await new Promise(r=>c.toBlob(r,'image/jpeg',IMG_Q));
+    return (out&&out.size<blob.size)?out:blob;
+  }catch(e){console.warn('No se pudo comprimir, se sube original',e);return blob;}
+}
 async function uploadImage(file){
-  const ext=file.name.split('.').pop();
-  const fileName=Date.now()+'.'+ext;
+  const blob=await compressImage(file);
+  const ext=blob.type==='image/webp'?'webp':blob.type==='image/jpeg'?'jpg':(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const fileName=Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
   const r=await authFetch(SB_STORAGE+'/products/'+fileName,{
     method:'POST',
-    headers:{...SB_H,'Content-Type':file.type},
-    body:file
+    headers:{...SB_H,'Content-Type':blob.type||file.type||'application/octet-stream'},
+    body:blob
   });
   if(!r.ok) throw new Error('Error subiendo imagen');
   return SB_URL+'/storage/v1/object/public/products/'+fileName;
@@ -607,6 +626,35 @@ async function deleteProduct(){
     switchTabDirect('products');
     loadAll();
   }catch(err){console.error(err);showToast('Error al eliminar')}
+}
+
+/* ===== OPTIMIZAR FOTOS YA CARGADAS (se usa una vez) ===== */
+const OPT_MIN_BYTES=200*1024;
+async function optimizeAllImages(){
+  const btn=document.getElementById('optBtn');
+  const mine=SB_URL+'/storage/v1/object/public/products/';
+  const list=allProducts.filter(p=>p.img&&p.img.startsWith(mine));
+  if(!list.length){showToast('No hay fotos para optimizar');return;}
+  btn.disabled=true;
+  let done=0,saved=0,changed=0,fails=0;
+  for(const p of list){
+    done++;btn.textContent='⏳ '+done+' / '+list.length;
+    try{
+      const res=await fetch(p.img,{cache:'no-store'});
+      if(!res.ok) throw new Error('descarga '+res.status);
+      const orig=await res.blob();
+      if(orig.size<OPT_MIN_BYTES) continue;
+      const small=await compressImage(orig);
+      if(small.size>orig.size*0.8) continue;
+      const newUrl=await uploadImage(new File([small],'foto.'+(small.type==='image/webp'?'webp':'jpg'),{type:small.type}));
+      const r=await authFetch(SB_API+'?id=eq.'+p.id,{method:'PATCH',headers:{...SB_H,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({img:newUrl})});
+      if(!r.ok) throw new Error('guardar '+r.status);
+      p.img=newUrl;saved+=orig.size-small.size;changed++;
+    }catch(e){console.error('Optimizar',p.name,e);fails++;}
+  }
+  btn.disabled=false;btn.textContent='⚡ Optimizar fotos';
+  showToast(changed?('Listo: '+changed+' fotos, '+Math.round(saved/1048576)+' MB menos'+(fails?' · '+fails+' con error':'')):'Las fotos ya estaban livianas ✓');
+  renderProducts(document.getElementById('filterCategory').value||null);
 }
 
 /* ===== PEDIDOS (solo lectura) ===== */

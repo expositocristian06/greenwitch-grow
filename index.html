@@ -387,7 +387,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
 <section class="delivery-section">
   <div class="section-inner">
     <div class="section-eyebrow">Entrega en Mar del Plata</div>
-    <h2 class="section-title">¿Se te acabaron el viernes a la tarde?<br><em style="color:var(--verde-neon);font-style:italic">Te lo llevamos en 2 horas.</em></h2>
+    <h2 class="section-title">¿Se te acabaron el viernes a la tarde?<br><em style="color:var(--verde-neon);font-style:italic">Te lo llevamos en el día.</em></h2>
     <p style="font-size:0.88rem;color:var(--texto-muted);line-height:1.8;max-width:580px;margin-bottom:3rem">Lo que ninguna plataforma grande puede darte: tu pedido en la puerta antes de que arranque el finde. Sin esperar al lunes, sin depender del correo.</p>
     <div class="delivery-grid">
       <div class="delivery-card">
@@ -400,7 +400,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
         <div class="featured-tag">⚡ Lo que nadie más ofrece</div>
         <div class="icon">🛵</div>
         <h3>Envío por moto en el día</h3>
-        <p>Para pedidos dentro de Mar del Plata. Coordinás por WhatsApp y en 2 horas está en tu puerta.</p>
+        <p>Para pedidos dentro de Mar del Plata. Coordinás por WhatsApp y te lo llevamos en el día.</p>
         <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20pedir%20env%C3%ADo%20por%20moto%20hoy" target="_blank" style="display:inline-block;background:var(--verde-neon);color:var(--negro);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none">Pedir ahora →</a>
       </div>
       <div class="delivery-card">
@@ -748,7 +748,7 @@ function openPanel_(id){
   if(!p)return;
   openProduct=p;
   document.getElementById('panelBc').textContent=p.category;
-  document.getElementById('panelImg').innerHTML=p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}">`:`<span class="emoji-big">${p.emoji||'🌿'}</span>`;
+  document.getElementById('panelImg').innerHTML=p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" decoding="async">`:`<span class="emoji-big">${p.emoji||'🌿'}</span>`;
   document.getElementById('panelCat').textContent=p.category;
   document.getElementById('panelName').textContent=p.name;
   let priceHTML='';
