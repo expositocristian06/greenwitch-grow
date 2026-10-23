@@ -94,6 +94,21 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 .modal{background:var(--negro);border:1px solid var(--borde);border-radius:6px;padding:2rem;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
 .modal h2{font-size:1.1rem;color:var(--crema);margin-bottom:1.5rem;font-weight:600}
 
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.login-card{width:100%;max-width:380px;background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:6px;padding:2rem}
+.login-card h1{font-size:1.2rem;color:var(--verde-neon);margin-bottom:0.3rem}
+.login-card p.sub{font-size:0.8rem;color:var(--texto-muted);margin-bottom:1.5rem}
+.login-card .btn-admin{width:100%;justify-content:center;margin-top:0.4rem}
+.login-err{color:#e85555;font-size:0.78rem;min-height:1.2rem;margin-top:0.8rem}
+.logout-btn{background:none;border:1px solid var(--borde);color:var(--texto-muted);padding:0.35rem 0.8rem;font-size:0.7rem;letter-spacing:1px;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;margin-left:1rem}
+.logout-btn:hover{border-color:#e85555;color:#e85555}
+.order-card{background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1rem 1.2rem;margin-bottom:0.8rem}
+.order-top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center}
+.order-items{font-size:0.78rem;color:var(--texto-muted);margin-top:0.6rem;line-height:1.6}
+.st-paid{background:rgba(126,200,80,0.15);color:var(--verde-neon)}
+.st-pending{background:rgba(200,168,75,0.15);color:var(--dorado)}
+.st-rejected,.st-cancelled{background:rgba(220,50,50,0.15);color:#e85555}
 @media(max-width:768px){
   .admin-body{padding:1rem}
   .form-row,.form-row-3{grid-template-columns:1fr}
@@ -104,9 +119,22 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 </head>
 <body>
 
+<!-- LOGIN -->
+<div class="login-wrap" id="loginView">
+  <form class="login-card" id="loginForm" onsubmit="doLogin(event)">
+    <h1>🌿 Panel Admin</h1>
+    <p class="sub">Ingresá tu contraseña.</p>
+    <input type="text" id="lUser" value="admin" autocomplete="username" hidden aria-hidden="true">
+    <div class="form-group"><label for="lPass">Contraseña</label><input type="password" id="lPass" autocomplete="current-password" required></div>
+    <button type="submit" class="btn-admin btn-save" id="loginBtn">Entrar</button>
+    <div class="login-err" id="loginErr" role="alert"></div>
+  </form>
+</div>
+
+<div id="appView" style="display:none">
 <div class="admin-header">
   <h1>🌿 Panel Admin</h1>
-  <a href="index.html">← Volver a la tienda</a>
+  <div><a href="index.html">← Volver a la tienda</a><button class="logout-btn" onclick="logout()">Salir</button></div>
 </div>
 
 <div class="admin-body">
@@ -115,6 +143,7 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
     <button class="tab active" onclick="switchTab('products')">Productos</button>
     <button class="tab" onclick="switchTab('categories')">Categorías</button>
     <button class="tab" onclick="switchTab('add')">+ Nuevo producto</button>
+    <button class="tab" onclick="switchTab('orders')">Pedidos</button>
   </div>
 
   <!-- TAB: PRODUCTS LIST -->
@@ -149,6 +178,12 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 
     <div class="cat-cards" id="catCards"></div>
     <p style="font-size:0.72rem;color:var(--texto-muted)">💡 Para que una categoría aparezca en la tienda, debe tener al menos un producto activo.</p>
+  </div>
+
+  <!-- TAB: ORDERS -->
+  <div class="tab-content" id="tab-orders">
+    <p style="font-size:0.82rem;color:var(--texto-muted);margin-bottom:1.2rem" id="ordersInfo">Cargando...</p>
+    <div id="ordersList"></div>
   </div>
 
   <!-- TAB: ADD/EDIT PRODUCT -->
@@ -232,6 +267,8 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
   </div>
 </div>
 
+</div><!-- /appView -->
+
 <!-- RENAME MODAL -->
 <div class="modal-bg" id="renameModal">
   <div class="modal">
@@ -257,6 +294,75 @@ const SB_API=SB_URL+'/rest/v1/products';
 const SB_STORAGE=SB_URL+'/storage/v1/object';
 const SB_H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 
+/* ===== AUTH (Supabase Auth, email + contraseña) ===== */
+/* Cuenta única del panel: Pri solo escribe la contraseña.
+   Este email es interno (no recibe correos); tiene que coincidir con el
+   usuario creado en Supabase → Authentication → Users. */
+const ADMIN_EMAIL='admin@greenwitch-grow.vercel.app';
+const SESSION_KEY='gwg_admin_session';
+let session=null;
+function saveSession(s){session=s;try{localStorage.setItem(SESSION_KEY,JSON.stringify(s))}catch(e){}}
+function clearSession(){session=null;try{localStorage.removeItem(SESSION_KEY)}catch(e){}}
+function readSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch(e){return null}}
+function toSession(d){return {access_token:d.access_token,refresh_token:d.refresh_token,expires_at:Math.floor(Date.now()/1000)+(d.expires_in||3600)}}
+
+async function authCall(grant,body){
+  const r=await fetch(SB_URL+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.access_token) throw new Error(d.error_description||d.msg||'Error');
+  return d;
+}
+async function freshToken(){
+  if(!session) throw new Error('Sin sesión');
+  if(session.expires_at-60>Math.floor(Date.now()/1000)) return session.access_token;
+  try{
+    saveSession(toSession(await authCall('refresh_token',{refresh_token:session.refresh_token})));
+    return session.access_token;
+  }catch(e){showLogin('Tu sesión venció. Ingresá de nuevo.');throw e;}
+}
+/* Igual que fetch, pero con el token de la persona logueada */
+async function authFetch(url,opts){
+  opts=opts||{};
+  const tk=await freshToken();
+  const r=await fetch(url,{...opts,headers:{...(opts.headers||{}),'apikey':SB_KEY,'Authorization':'Bearer '+tk}});
+  if(r.status===401){showLogin('Tu sesión venció. Ingresá de nuevo.');}
+  return r;
+}
+function showLogin(msg){
+  clearSession();
+  document.getElementById('appView').style.display='none';
+  document.getElementById('loginView').style.display='flex';
+  document.getElementById('loginErr').textContent=msg||'';
+  document.getElementById('lPass').value='';
+}
+function showApp(){
+  document.getElementById('loginView').style.display='none';
+  document.getElementById('appView').style.display='block';
+}
+/* Confirma que la cuenta sea de administrador: si no lo es, el servidor rechaza escribir. */
+async function checkAdmin(){
+  const r=await authFetch(SB_URL+'/rest/v1/rpc/is_admin',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+  return r.ok&&(await r.json())===true;
+}
+async function doLogin(e){
+  e.preventDefault();
+  const btn=document.getElementById('loginBtn'),err=document.getElementById('loginErr');
+  btn.disabled=true;err.textContent='';
+  try{
+    saveSession(toSession(await authCall('password',{email:ADMIN_EMAIL,password:document.getElementById('lPass').value})));
+    if(!(await checkAdmin())){showLogin('Esta cuenta no tiene permiso de administrador.');return;}
+    document.getElementById('lPass').value='';
+    showApp();loadAll();
+  }catch(ex){
+    if(session) return; /* showLogin ya mostró el mensaje */
+    err.textContent='Contraseña incorrecta.';
+  }finally{btn.disabled=false}
+}
+async function logout(){
+  try{ if(session) await fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+session.access_token}}); }catch(e){}
+  showLogin('');
+}
+
 let allProducts=[];
 let categories=[];
 
@@ -267,13 +373,15 @@ function switchTab(id){
   document.getElementById('tab-'+id).classList.add('active');
   event.target.classList.add('active');
   if(id==='add'&&!document.getElementById('editId').value) resetForm();
+  if(id==='orders') loadOrders();
 }
 
 /* ===== LOAD ===== */
 async function loadAll(){
   try{
-    const r=await fetch(SB_API+'?select=*&order=created_at.desc',{headers:SB_H});
+    const r=await authFetch(SB_API+'?select=*&order=created_at.desc',{headers:SB_H});
     allProducts=await r.json();
+    if(!Array.isArray(allProducts)){allProducts=[];throw new Error('sin permiso')}
     extractCategories();
     renderProducts();
     renderCategories();
@@ -361,7 +469,7 @@ async function renameCategory(){
   // Update all products with the old category
   const productsToUpdate=allProducts.filter(p=>p.category===oldName);
   try{
-    const r=await fetch(SB_API+'?category=eq.'+encodeURIComponent(oldName),{
+    const r=await authFetch(SB_API+'?category=eq.'+encodeURIComponent(oldName),{
       method:'PATCH',
       headers:{...SB_H,'Content-Type':'application/json','Prefer':'return=minimal'},
       body:JSON.stringify({category:newName})
@@ -407,7 +515,7 @@ function switchTabDirect(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
-  document.querySelectorAll('.tab')[id==='products'?0:id==='categories'?1:2].classList.add('active');
+  document.querySelectorAll('.tab')[{products:0,categories:1,add:2,orders:3}[id]].classList.add('active');
 }
 
 function resetForm(){
@@ -431,7 +539,7 @@ function previewImage(input){
 async function uploadImage(file){
   const ext=file.name.split('.').pop();
   const fileName=Date.now()+'.'+ext;
-  const r=await fetch(SB_STORAGE+'/products/'+fileName,{
+  const r=await authFetch(SB_STORAGE+'/products/'+fileName,{
     method:'POST',
     headers:{...SB_H,'Content-Type':file.type},
     body:file
@@ -471,7 +579,7 @@ async function saveProduct(e){
       url+='?id=eq.'+editId;
       method='PATCH';
     }
-    const r=await fetch(url,{
+    const r=await authFetch(url,{
       method,
       headers:{...SB_H,'Content-Type':'application/json','Prefer':'return=minimal'},
       body:JSON.stringify(data)
@@ -489,7 +597,7 @@ async function deleteProduct(){
   if(!id)return;
   if(!confirm('¿Segura que querés eliminar este producto?'))return;
   try{
-    const r=await fetch(SB_API+'?id=eq.'+id,{
+    const r=await authFetch(SB_API+'?id=eq.'+id,{
       method:'DELETE',
       headers:{...SB_H,'Prefer':'return=minimal'}
     });
@@ -501,12 +609,47 @@ async function deleteProduct(){
   }catch(err){console.error(err);showToast('Error al eliminar')}
 }
 
+/* ===== PEDIDOS (solo lectura) ===== */
+const ST_LABEL={paid:'Pagado',pending:'Pendiente',rejected:'Rechazado',cancelled:'Cancelado'};
+async function loadOrders(){
+  const info=document.getElementById('ordersInfo'),list=document.getElementById('ordersList');
+  info.textContent='Cargando...';
+  try{
+    const r=await authFetch(SB_URL+'/rest/v1/orders?select=*,order_items(name,qty,unit_price)&order=created_at.desc&limit=100');
+    const rows=await r.json();
+    if(!r.ok||!Array.isArray(rows)) throw new Error('Error');
+    info.textContent=rows.length?('Últimos '+rows.length+' pedidos'):'Todavía no hay pedidos.';
+    list.innerHTML=rows.map(o=>{
+      const st=ST_LABEL[o.status]?o.status:'pending';
+      const f=new Date(o.created_at).toLocaleString('es-AR',{dateStyle:'short',timeStyle:'short'});
+      const wsp=String(o.buyer_phone||'').replace(/\D/g,'');
+      return `<div class="order-card">
+        <div class="order-top">
+          <div><strong style="color:var(--crema)">${esc(o.buyer_name)}</strong>
+            <span style="font-size:0.75rem;color:var(--texto-muted)"> · ${esc(f)}</span></div>
+          <div><span class="status-badge st-${st}">${ST_LABEL[st]}</span>
+            <strong style="margin-left:0.6rem">$${Number(o.total).toLocaleString('es-AR')}</strong></div>
+        </div>
+        <div class="order-items">${(o.order_items||[]).map(i=>esc(i.qty)+' × '+esc(i.name)).join('<br>')}</div>
+        <div class="order-items">📱 ${wsp?`<a href="https://wa.me/${wsp}" target="_blank" rel="noopener" style="color:var(--verde-neon)">${esc(o.buyer_phone)}</a>`:'—'}${o.buyer_email?' · ✉️ '+esc(o.buyer_email):''}${o.stock_applied?' · stock descontado':''}</div>
+      </div>`;
+    }).join('');
+  }catch(e){console.error(e);info.textContent='No se pudieron cargar los pedidos.'}
+}
+
 /* ===== UTILS ===== */
 function esc(str){if(!str)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 
 /* ===== INIT ===== */
-loadAll();
+(async function init(){
+  session=readSession();
+  if(!session){showLogin('');return;}
+  try{
+    if(await checkAdmin()){showApp();loadAll();}
+    else showLogin('');
+  }catch(e){showLogin('')}
+})();
 </script>
 </body>
 </html>
