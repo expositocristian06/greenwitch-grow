@@ -312,6 +312,14 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
   .products-grid{grid-template-columns:1fr 1fr;gap:0.5rem}
   .hero h1{font-size:1.65rem}
 }
+
+/* ===== MERCADO PAGO ===== */
+.buyer-form{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem}
+.buyer-form .f-input{font-size:16px}
+.buyer-note{font-size:0.72rem;color:var(--texto-muted);line-height:1.5;margin-top:0.2rem}
+.pay-mp{background:#009ee3;color:#fff}
+.pay-mp:hover{background:#0087c4}
+.pay-btn:disabled{opacity:0.6;cursor:wait}
 </style>
 </head>
 <body style="font-family:Inter,sans-serif;background:#0D0D0D;color:#E8E0CC;overflow-x:hidden">
@@ -497,9 +505,15 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="cart-total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <div class="buyer-form" id="buyerForm">
+      <input class="f-input" id="bName" type="text" placeholder="Tu nombre" autocomplete="name" maxlength="80">
+      <input class="f-input" id="bPhone" type="tel" inputmode="tel" placeholder="Tu WhatsApp (ej: 223 555 1234)" autocomplete="tel" maxlength="30">
+      <input class="f-input" id="bEmail" type="email" placeholder="Email (opcional)" autocomplete="email" maxlength="120">
+      <p class="buyer-note">Pagás los productos con Mercado Pago. El envío o retiro lo coordinamos por WhatsApp.</p>
+    </div>
     <div class="pay-options">
-      <button class="pay-btn pay-wsp" onclick="sendWsp()">🟢 Pagar por WhatsApp</button>
-      <button class="pay-btn pay-transfer">🏦 Transferencia bancaria</button>
+      <button class="pay-btn pay-mp" id="payMpBtn" onclick="payMP()">💳 Pagar con Mercado Pago</button>
+      <button class="pay-btn pay-wsp" onclick="sendWsp()">🟢 Pedir por WhatsApp</button>
     </div>
   </div>
 </div>
@@ -819,6 +833,47 @@ function sendWsp(){
   const lines=cart.map(i=>'• '+i.name+' x'+i.qty+' = '+formatPrice(i.price*i.qty)).join('%0A');
   const msg='Hola Green Witch! Quiero hacer un pedido:%0A%0A'+lines+'%0A%0ATotal: '+formatPrice(getTotal())+'%0A%0A¿Cómo coordino el pago?';
   window.open('https://wa.me/5492234239776?text='+msg,'_blank');
+}
+
+/* ===== MERCADO PAGO ===== */
+/* Llama a la Edge Function create-preference. El precio NO se envía: lo recalcula el servidor. */
+const MP_FN=SB_URL+'/functions/v1/create-preference';
+async function payMP(){
+  if(!cart.length) return;
+  const nameEl=document.getElementById('bName');
+  const phoneEl=document.getElementById('bPhone');
+  const name=nameEl.value.trim();
+  const phone=phoneEl.value.trim();
+  const email=document.getElementById('bEmail').value.trim();
+  if(name.length<2){showToast('Ingresá tu nombre');nameEl.focus();return;}
+  if(phone.replace(/\D/g,'').length<8){showToast('Ingresá tu WhatsApp para coordinar la entrega');phoneEl.focus();return;}
+
+  const btn=document.getElementById('payMpBtn');
+  const label=btn.textContent;
+  btn.disabled=true;
+  btn.textContent='Conectando con Mercado Pago…';
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),20000);
+  try{
+    const r=await fetch(MP_FN,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY},
+      body:JSON.stringify({items:cart.map(i=>({id:i.id,qty:i.qty})),buyer:{name,phone,email}}),
+      signal:ctrl.signal
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok||!data.init_point) throw new Error(data.error||'No pudimos iniciar el pago. Probá de nuevo.');
+    /* Solo se redirige a dominios de Mercado Pago */
+    const host=new URL(data.init_point).hostname;
+    if(!/(^|\.)mercadopago\.com(\.ar)?$/.test(host)) throw new Error('Respuesta de pago inesperada.');
+    window.location.href=data.init_point;
+  }catch(e){
+    showToast(e.name==='AbortError'?'Tardó demasiado. Probá de nuevo.':e.message);
+    btn.disabled=false;
+    btn.textContent=label;
+  }finally{
+    clearTimeout(timer);
+  }
 }
 
 /* ===== UTILS ===== */

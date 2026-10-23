@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" style="--negro:#0D0D0D;--verde-oscuro:#1A2E1A;--verde:#2D5A27;--verde-neon:#7EC850;--crema:#F0EBD8;--dorado:#C8A84B;--texto:#E8E0CC;--texto-muted:#8A8A7A;--borde:#2A3A2A">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D0D0D">
+<meta name="robots" content="noindex">
+<title>Tu pedido · Green Witch Grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#0D0D0D;--verde-oscuro:#1A2E1A;--verde:#2D5A27;--verde-neon:#7EC850;
+  --crema:#F0EBD8;--dorado:#C8A84B;--texto:#E8E0CC;--texto-muted:#8A8A7A;--borde:#2A3A2A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 70% 20%,rgba(45,90,39,0.28) 0%,transparent 60%),var(--negro);color:var(--texto);min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.card{width:100%;max-width:520px;text-align:center;background:linear-gradient(180deg,rgba(45,90,39,0.3),rgba(26,46,26,0.15));border:1px solid var(--borde);border-radius:8px;padding:2.6rem 2rem}
+.card.ok{border-color:var(--verde-neon)}
+.card.pendiente{border-color:var(--dorado)}
+.icon{font-size:3rem;margin-bottom:1rem}
+.brand{font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.2rem;font-weight:600}
+h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(1.6rem,6vw,2.1rem);color:var(--crema);line-height:1.2;margin-bottom:0.9rem}
+p{font-size:0.92rem;color:var(--texto-muted);line-height:1.75;margin:0 auto 0.8rem;max-width:44ch}
+.actions{display:flex;flex-direction:column;gap:0.7rem;margin-top:1.8rem}
+.btn{display:flex;align-items:center;justify-content:center;padding:0.9rem 1.4rem;border-radius:2px;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;font-family:'Inter',sans-serif;border:none;cursor:pointer}
+.btn-wsp{background:#25D366;color:#fff}
+.btn-wsp:hover{background:#1aad50}
+.btn-ghost{background:transparent;color:var(--crema);border:1px solid var(--borde)}
+.btn-ghost:hover,.btn-ghost:focus-visible{border-color:var(--verde-neon);color:var(--verde-neon);outline:none}
+</style>
+</head>
+<body>
+<main class="card" id="card" aria-live="polite">
+  <div class="icon" id="icon" aria-hidden="true">🌿</div>
+  <div class="brand">Green Witch Grow</div>
+  <h1 id="title">Gracias por tu visita</h1>
+  <p id="msg">Si hiciste un pedido, te escribimos por WhatsApp para coordinar.</p>
+  <div class="actions">
+    <a class="btn btn-wsp" id="wsp" href="https://wa.me/5492234239776" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+    <a class="btn btn-ghost" href="index.html">Volver a la tienda</a>
+  </div>
+</main>
+
+<script>
+/* Los textos se muestran con textContent y salen de un mapa fijo:
+   la URL solo elige cuál mostrar, nunca se inserta en la página. */
+(function(){
+  var estados={
+    ok:{
+      cls:'ok',icon:'✅',
+      title:'¡Gracias por tu compra!',
+      msg:'Estamos confirmando tu pago con Mercado Pago. En breve te escribimos por WhatsApp para coordinar el retiro o el envío.',
+      wsp:'Hola! Acabo de pagar mi pedido con Mercado Pago.'
+    },
+    pendiente:{
+      cls:'pendiente',icon:'⏳',
+      title:'Tu pago está pendiente',
+      msg:'Mercado Pago todavía no confirmó el pago. Apenas se acredite te avisamos por WhatsApp. Si pagaste en efectivo, puede demorar hasta 2 días hábiles.',
+      wsp:'Hola! Hice un pedido y mi pago figura pendiente.'
+    },
+    error:{
+      cls:'',icon:'⚠️',
+      title:'No pudimos procesar el pago',
+      msg:'El pago no se completó. Podés volver a la tienda e intentarlo de nuevo. Si te descontaron dinero, escribinos y lo resolvemos enseguida.',
+      wsp:'Hola! Tuve un problema al pagar mi pedido con Mercado Pago.'
+    }
+  };
+  var params=new URLSearchParams(location.search);
+  var e=estados[params.get('estado')];
+  if(!e) return;
+  document.getElementById('card').className='card '+e.cls;
+  document.getElementById('icon').textContent=e.icon;
+  document.getElementById('title').textContent=e.title;
+  document.getElementById('msg').textContent=e.msg;
+  document.getElementById('wsp').href='https://wa.me/5492234239776?text='+encodeURIComponent(e.wsp);
+})();
+</script>
+</body>
+</html>
