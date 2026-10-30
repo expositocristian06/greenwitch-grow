@@ -2,6 +2,7 @@
 <html lang="es" style="--negro:#0D0D0D;--verde-oscuro:#1A2E1A;--verde:#2D5A27;--verde-claro:#52A647;--verde-neon:#7EC850;--crema:#F0EBD8;--crema-oscuro:#D9D0B8;--dorado:#C8A84B;--texto:#E8E0CC;--texto-muted:#8A8A7A;--borde:#2A3A2A;--white:#FFFFFF">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin · Green Witch Grow</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -404,11 +405,11 @@ function renderProducts(filter){
   const tbody=document.getElementById('productsBody');
   tbody.innerHTML=filtered.map(p=>`
     <tr>
-      <td><div class="product-thumb">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" width="45" height="45">`:(p.emoji||'🌿')}</div></td>
+      <td><div class="product-thumb">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" width="45" height="45">`:esc(p.emoji||'🌿')}</div></td>
       <td style="font-weight:500;color:var(--crema)">${esc(p.name)}</td>
       <td style="font-size:0.75rem;color:var(--texto-muted)">${esc(p.category)}</td>
       <td style="font-weight:600">$${Number(p.price).toLocaleString('es-AR')}</td>
-      <td>${p.stock}</td>
+      <td>${esc(p.stock)}</td>
       <td><span class="status-badge ${p.active?'status-active':'status-inactive'}">${p.active?'Activo':'Oculto'}</span></td>
       <td><button class="edit-btn" onclick="editProduct('${p.id}')">Editar</button></td>
     </tr>`).join('');
@@ -436,7 +437,7 @@ function renderCategories(){
         <div class="cat-card-count">${count} producto${count!==1?'s':''} · ${activeCount} activo${activeCount!==1?'s':''}</div>
       </div>
       <div class="cat-card-actions">
-        <button class="cat-card-btn" onclick="openRenameModal('${esc(cat)}')" title="Renombrar">✏️</button>
+        <button class="cat-card-btn" data-cat="${esc(cat)}" onclick="openRenameModal(this.dataset.cat)" title="Renombrar">✏️</button>
       </div>
     </div>`;
   }).join('');
@@ -686,7 +687,7 @@ async function loadOrders(){
 }
 
 /* ===== UTILS ===== */
-function esc(str){if(!str)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(str){if(str===null||str===undefined||str==='')return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 
 /* ===== INIT ===== */

@@ -349,7 +349,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
       <p class="hero-sub">Fertilizantes, insecticidas, sustrato... todo lo necesario para un cultivo sano y fuerte. Parafernalia, tabaco y accesorios para el fumador.</p>
       <div style="display:flex;gap:1rem;flex-wrap:wrap">
         <a href="#productos" class="btn btn-primary">Ver productos</a>
-        <a href="https://wa.me/5492234239776" target="_blank" class="btn btn-ghost">Consultar por WhatsApp</a>
+        <a href="https://wa.me/5492234239776" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Consultar por WhatsApp</a>
       </div>
 
     </div>
@@ -402,7 +402,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
         <div class="icon">🛵</div>
         <h3>Envío por moto en el día</h3>
         <p>Para pedidos dentro de Mar del Plata. Coordinás por WhatsApp y te lo llevamos en el día.</p>
-        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20pedir%20env%C3%ADo%20por%20moto%20hoy" target="_blank" style="display:inline-block;background:var(--verde-neon);color:var(--negro);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none">Pedir ahora →</a>
+        <a href="https://wa.me/5492234239776?text=Hola!%20Quiero%20pedir%20env%C3%ADo%20por%20moto%20hoy" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:var(--verde-neon);color:var(--negro);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none">Pedir ahora →</a>
       </div>
       <div class="delivery-card">
         <div class="icon">📦</div>
@@ -482,7 +482,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
   <div class="wsp-cta-brujita" aria-hidden="true"></div>
   <h3>¿Preferís hablar con nosotros?</h3>
   <p>Estamos en el local de Lunes a Sábado de 10 a 13:30 y de 16 a 19:30 hs. También por WhatsApp.</p>
-  <a href="https://wa.me/5492234239776" target="_blank" class="wsp-btn" style="position:relative">Escribinos ahora</a>
+  <a href="https://wa.me/5492234239776" target="_blank" rel="noopener noreferrer" class="wsp-btn" style="position:relative">Escribinos ahora</a>
 </div>
 
 <!-- FOOTER -->
@@ -494,7 +494,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
     <p>📍 Tejedor 1985, Mar del Plata</p>
     <p>Lun a Sab · 10 a 13:30 hs y 16 a 19:30 hs</p>
     <p><a href="https://wa.me/5492234239776">WhatsApp: +54 9 223 423-9776</a></p>
-    <p><a href="https://instagram.com/greenwitchgrow" target="_blank">@greenwitchgrow</a></p>
+    <p><a href="https://instagram.com/greenwitchgrow" target="_blank" rel="noopener noreferrer">@greenwitchgrow</a></p>
   </div>
   <div class="footer-copy">© 2026 Green Witch Grow · Todos los derechos reservados</div>
 </footer>
@@ -715,7 +715,7 @@ function renderProducts(list){
       cardsHTML+=`
       <div class="product-card" onclick="openPanel_('${p.id}')">
         <div class="product-img">
-          ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`:`<span style="font-size:4rem">${p.emoji||'🌿'}</span>`}
+          ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`:`<span style="font-size:4rem">${esc(p.emoji||'🌿')}</span>`}
           ${p.unico?'<div class="unico-badge">⚡ Único</div>':''}
           ${discount>0?`<div class="discount-badge">${discount}% OFF</div>`:''}
         </div>
@@ -750,7 +750,7 @@ function openPanel_(id){
   if(!p)return;
   openProduct=p;
   document.getElementById('panelBc').textContent=p.category;
-  document.getElementById('panelImg').innerHTML=p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" decoding="async">`:`<span class="emoji-big">${p.emoji||'🌿'}</span>`;
+  document.getElementById('panelImg').innerHTML=p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" decoding="async">`:`<span class="emoji-big">${esc(p.emoji||'🌿')}</span>`;
   document.getElementById('panelCat').textContent=p.category;
   document.getElementById('panelName').textContent=p.name;
   let priceHTML='';
@@ -775,7 +775,7 @@ function addFromPanel(){
 }
 function consultarWsp(){
   if(!openProduct)return;
-  window.open('https://wa.me/5492234239776?text=Hola! Me interesa: '+openProduct.name+' ('+formatPrice(openProduct.price)+')','_blank');
+  window.open('https://wa.me/5492234239776?text='+encodeURIComponent('Hola! Me interesa: '+openProduct.name+' ('+formatPrice(openProduct.price)+')'),'_blank','noopener');
 }
 function quickAdd(id){
   const p=allProducts.find(x=>x.id===id);
@@ -815,7 +815,7 @@ function renderCart(){
   footer.style.display='';
   el.innerHTML=cart.map(item=>`
     <div style="display:flex;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--borde)">
-      <div style="width:60px;height:75px;background:var(--verde-oscuro);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">${item.emoji}</div>
+      <div style="width:60px;height:75px;background:var(--verde-oscuro);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">${esc(item.emoji)}</div>
       <div style="flex:1">
         <div style="font-size:0.85rem;color:var(--crema);margin-bottom:0.3rem;font-weight:500">${esc(item.name)}</div>
         <div style="font-size:0.8rem;color:var(--verde-neon);font-weight:600">${formatPrice(item.price*item.qty)}</div>
@@ -832,9 +832,9 @@ function renderCart(){
 function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
 function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
 function sendWsp(){
-  const lines=cart.map(i=>'• '+i.name+' x'+i.qty+' = '+formatPrice(i.price*i.qty)).join('%0A');
-  const msg='Hola Green Witch! Quiero hacer un pedido:%0A%0A'+lines+'%0A%0ATotal productos: '+formatPrice(getTotal())+' (sin envío)%0A%0A¿Cómo coordino el pago y el envío?';
-  window.open('https://wa.me/5492234239776?text='+msg,'_blank');
+  const lines=cart.map(i=>'• '+i.name+' x'+i.qty+' = '+formatPrice(i.price*i.qty)).join('\n');
+  const msg='Hola Green Witch! Quiero hacer un pedido:\n\n'+lines+'\n\nTotal productos: '+formatPrice(getTotal())+' (sin envío)\n\n¿Cómo coordino el pago y el envío?';
+  window.open('https://wa.me/5492234239776?text='+encodeURIComponent(msg),'_blank','noopener');
 }
 
 /* ===== MERCADO PAGO ===== */
@@ -880,7 +880,7 @@ async function payMP(){
 
 /* ===== UTILS ===== */
 function formatPrice(p){return '$'+Number(p).toLocaleString('es-AR')}
-function esc(str){if(!str)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(str){if(str===null||str===undefined||str==='')return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function slugify(str){return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');}
