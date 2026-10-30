@@ -4,8 +4,8 @@
 --
 -- Qué hace:
 --   1. products     → el público solo ve productos ACTIVOS; solo el admin escribe.
---   2. orders / order_items NO se tocan (los usa la Edge Function de pago);
---      al final se listan sus políticas para revisarlas.
+--   2. orders → se agrega que el admin pueda BORRAR pedidos (el resto no se toca;
+--      la Edge Function de pago escribe con service_role).
 --   3. Bucket "products" → solo el admin sube/cambia/borra fotos; el público ya no
 --      puede LISTAR el bucket (las fotos se siguen viendo por su URL pública).
 --   4. Limita el bucket a imágenes de hasta 5 MB.
@@ -81,6 +81,12 @@ create policy "admin cambia fotos" on storage.objects
   with check (bucket_id = 'products' and public.is_admin());
 create policy "admin borra fotos" on storage.objects
   for delete to authenticated using (bucket_id = 'products' and public.is_admin());
+
+-- ---------- Pedidos: el admin puede borrarlos ----------
+-- (los order_items se borran solos por ON DELETE CASCADE)
+drop policy if exists "admin borra pedidos" on public.orders;
+create policy "admin borra pedidos" on public.orders
+  for delete to authenticated using (public.is_admin());
 
 commit;
 
