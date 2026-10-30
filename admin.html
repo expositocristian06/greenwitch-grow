@@ -107,6 +107,8 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 .order-card{background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1rem 1.2rem;margin-bottom:0.8rem}
 .order-top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center}
 .order-items{font-size:0.78rem;color:var(--texto-muted);margin-top:0.6rem;line-height:1.6}
+.order-del{margin-top:0.8rem;display:flex;justify-content:flex-end}
+.order-del .edit-btn:hover{border-color:#e05252;color:#e05252}
 .st-paid{background:rgba(126,200,80,0.15);color:var(--verde-neon)}
 .st-pending{background:rgba(200,168,75,0.15);color:var(--dorado)}
 .st-rejected,.st-cancelled{background:rgba(220,50,50,0.15);color:#e85555}
@@ -681,9 +683,27 @@ async function loadOrders(){
         </div>
         <div class="order-items">${(o.order_items||[]).map(i=>esc(i.qty)+' × '+esc(i.name)).join('<br>')}</div>
         <div class="order-items">📱 ${wsp?`<a href="https://wa.me/${wsp}" target="_blank" rel="noopener" style="color:var(--verde-neon)">${esc(o.buyer_phone)}</a>`:'—'}${o.buyer_email?' · ✉️ '+esc(o.buyer_email):''}${o.stock_applied?' · stock descontado':''}</div>
+        <div class="order-del"><button type="button" class="edit-btn" data-id="${esc(o.id)}" data-name="${esc(o.buyer_name)}" data-status="${st}" onclick="deleteOrder(this)">🗑 Eliminar pedido</button></div>
       </div>`;
     }).join('');
   }catch(e){console.error(e);info.textContent='No se pudieron cargar los pedidos.'}
+}
+
+/* Borra el pedido (sus productos se borran solos en la base).
+   No devuelve stock: si el pedido estaba pagado, ajustalo a mano. */
+async function deleteOrder(btn){
+  const id=btn.dataset.id,name=btn.dataset.name||'sin nombre',paid=btn.dataset.status==='paid';
+  let msg='¿Eliminar el pedido de '+name+'? No se puede deshacer.';
+  if(paid) msg+='\n\nOjo: este pedido está PAGADO. Borrarlo no devuelve la plata ni el stock.';
+  if(!confirm(msg)) return;
+  btn.disabled=true;
+  try{
+    const r=await authFetch(SB_URL+'/rest/v1/orders?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'Prefer':'return=representation'}});
+    const rows=await r.json().catch(()=>[]);
+    if(!r.ok||!Array.isArray(rows)||!rows.length) throw new Error('sin permiso');
+    showToast('Pedido eliminado');
+    loadOrders();
+  }catch(e){console.error(e);btn.disabled=false;showToast('No se pudo eliminar el pedido');}
 }
 
 /* ===== UTILS ===== */
