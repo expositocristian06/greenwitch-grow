@@ -413,7 +413,7 @@ function renderProducts(filter){
       <td style="font-weight:600">$${Number(p.price).toLocaleString('es-AR')}</td>
       <td>${esc(p.stock)}</td>
       <td><span class="status-badge ${p.active?'status-active':'status-inactive'}">${p.active?'Activo':'Oculto'}</span></td>
-      <td><button class="edit-btn" onclick="editProduct('${p.id}')">Editar</button></td>
+      <td style="white-space:nowrap"><button class="edit-btn" onclick="editProduct('${p.id}')">Editar</button> <button class="edit-btn" data-id="${esc(p.id)}" data-active="${p.active?1:0}" onclick="copyProductLink(this)" title="Copiar link para redes">🔗 Link</button></td>
     </tr>`).join('');
   document.getElementById('productCount').textContent=filtered.length+' producto'+(filtered.length!==1?'s':'');
   // Update filter dropdown
@@ -704,6 +704,16 @@ async function deleteOrder(btn){
     showToast('Pedido eliminado');
     loadOrders();
   }catch(e){console.error(e);btn.disabled=false;showToast('No se pudo eliminar el pedido');}
+}
+
+/* Link de cada producto para compartir en redes (abre su ficha en la tienda) */
+const STORE_URL=location.origin+location.pathname.replace(/admin\.html$/,'');
+function copyProductLink(btn){
+  const url=STORE_URL+'#producto-'+btn.dataset.id;
+  const done=()=>showToast(btn.dataset.active==='1'?'Link copiado ✓':'Link copiado — ojo: el producto está oculto');
+  const fallback=()=>window.prompt('Copiá el link:',url);
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(url).then(done).catch(fallback);
+  else fallback();
 }
 
 /* ===== UTILS ===== */

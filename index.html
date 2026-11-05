@@ -146,6 +146,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.9
 .panel-add:hover{background:#96D96A}
 .panel-wsp{width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:none;border:1px solid #25D366;color:#25D366;padding:0.75rem;border-radius:2px;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s}
 .panel-wsp:hover{background:#25D366;color:white}
+.panel-link{width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:none;border:1px solid var(--borde);color:var(--texto-muted);padding:0.7rem;border-radius:2px;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;margin-top:0.8rem;transition:all .2s}
+.panel-link:hover{border-color:var(--verde-neon);color:var(--verde-neon)}
 .unico-aviso{background:rgba(200,168,75,0.1);border:1px solid var(--dorado);border-radius:2px;padding:0.7rem 1rem;font-size:0.75rem;color:var(--dorado);margin-bottom:1rem;text-align:center;letter-spacing:1px}
 
 /* FOOTER */
@@ -537,6 +539,7 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
       <div class="panel-desc" id="panelDesc"></div>
       <button class="panel-add" onclick="addFromPanel()">Agregar al carrito</button>
       <button class="panel-wsp" onclick="consultarWsp()">💬 Consultar por WhatsApp</button>
+      <button class="panel-link" type="button" onclick="copyProductLink()">🔗 Compartir link del producto</button>
     </div>
   </div>
 </div>
@@ -583,7 +586,9 @@ async function loadProducts(){
     const fresh=await fetchProducts();
     const changed=!cached||JSON.stringify(fresh)!==JSON.stringify(cached);
     writeCache(fresh);
+    fresh.freshFromServer=true;
     if(changed) setProducts(fresh);
+    else{allProducts.freshFromServer=true;openFromHash();}
   }catch(e){
     console.error('Error cargando productos:',e);
     if(!cached){
@@ -600,6 +605,39 @@ function setProducts(list){
   buildNav();
   buildCategoryOptions();
   applyFilters();
+  openFromHash();
+}
+
+/* ===== LINK POR PRODUCTO =====
+   Cada producto tiene su link: tusitio/#producto-<id>. Al abrirlo se muestra su ficha. */
+const LINK_PREFIX='#producto-';
+let hashHandled=false;
+function productUrl(id){return location.origin+location.pathname+LINK_PREFIX+id;}
+function hashId(){return location.hash.startsWith(LINK_PREFIX)?decodeURIComponent(location.hash.slice(LINK_PREFIX.length)):null;}
+function openFromHash(force){
+  const id=hashId();
+  if(!id||(hashHandled&&!force)) return;
+  if(allProducts.find(x=>x.id===id)){hashHandled=true;openPanel_(id);return;}
+  /* Con caché vieja puede no estar todavía: se espera a la lista fresca */
+  if(force||allProducts.freshFromServer){
+    hashHandled=true;
+    history.replaceState(null,'',location.pathname+location.search);
+    showToast('Ese producto ya no está disponible');
+  }
+}
+window.addEventListener('hashchange',()=>openFromHash(true));
+function copyText(t){
+  if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(t);
+  return new Promise((ok,fail)=>{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():fail()}catch(e){fail(e)}a.remove();});
+}
+function copyProductLink(){
+  if(!openProduct) return;
+  const url=productUrl(openProduct.id);
+  if(navigator.share&&/Android|iPhone|iPad/i.test(navigator.userAgent)){
+    navigator.share({title:openProduct.name+' · Green Witch Grow',url}).catch(()=>{});
+    return;
+  }
+  copyText(url).then(()=>showToast('Link copiado ✓')).catch(()=>{window.prompt('Copiá el link:',url);});
 }
 
 /* ===== HELPERS ===== */
@@ -749,6 +787,7 @@ function openPanel_(id){
   const p=allProducts.find(x=>x.id===id);
   if(!p)return;
   openProduct=p;
+  if(location.hash!==LINK_PREFIX+p.id) history.replaceState(null,'',LINK_PREFIX+p.id);
   document.getElementById('panelBc').textContent=p.category;
   document.getElementById('panelImg').innerHTML=p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" decoding="async">`:`<span class="emoji-big">${esc(p.emoji||'🌿')}</span>`;
   document.getElementById('panelCat').textContent=p.category;
@@ -764,6 +803,7 @@ function openPanel_(id){
   document.body.style.overflow='hidden';
 }
 function closePanel(){
+  if(hashId()) history.replaceState(null,'',location.pathname+location.search);
   document.getElementById('panelOverlay').classList.remove('open');
   document.getElementById('productPanel').classList.remove('open');
   document.body.style.overflow='';
@@ -775,7 +815,7 @@ function addFromPanel(){
 }
 function consultarWsp(){
   if(!openProduct)return;
-  window.open('https://wa.me/5492234239776?text='+encodeURIComponent('Hola! Me interesa: '+openProduct.name+' ('+formatPrice(openProduct.price)+')'),'_blank','noopener');
+  window.open('https://wa.me/5492234239776?text='+encodeURIComponent('Hola! Me interesa: '+openProduct.name+' ('+formatPrice(openProduct.price)+')\n'+productUrl(openProduct.id)),'_blank','noopener');
 }
 function quickAdd(id){
   const p=allProducts.find(x=>x.id===id);
