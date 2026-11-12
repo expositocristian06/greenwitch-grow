@@ -320,6 +320,19 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
 .buyer-form .f-input{font-size:16px}
 .buyer-note{font-size:0.72rem;color:var(--texto-muted);line-height:1.5;margin-top:0.2rem}
 .ship-note{font-size:0.72rem;color:var(--dorado);line-height:1.5;margin:-0.6rem 0 1rem;text-align:right}
+/* ===== ENTREGA ===== */
+.cart-footer{max-height:78vh;overflow-y:auto}
+.ship-opts{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.9rem;border:none;padding:0}
+.ship-opts legend{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--texto-muted);margin-bottom:0.5rem;padding:0}
+.ship-opt{display:flex;align-items:flex-start;gap:0.6rem;padding:0.6rem 0.7rem;border:1px solid var(--borde);border-radius:2px;cursor:pointer;transition:border-color .2s}
+.ship-opt:has(input:checked){border-color:var(--verde-neon);background:rgba(126,200,80,0.06)}
+.ship-opt input{margin-top:0.15rem;accent-color:var(--verde-neon);width:16px;height:16px;flex-shrink:0}
+.ship-opt b{display:block;font-size:0.8rem;color:var(--crema);font-weight:500}
+.ship-opt small{display:block;font-size:0.68rem;color:var(--texto-muted);line-height:1.4;margin-top:0.1rem}
+.ship-cp{margin:-0.3rem 0 0.9rem}
+.ship-cp .f-input{font-size:16px}
+.cart-total.sub{margin-bottom:0.4rem}
+.cart-total.sub strong{font-size:0.85rem;font-weight:500}
 .pay-mp{background:#009ee3;color:#fff}
 .pay-mp:hover{background:#0087c4}
 .pay-btn:disabled{opacity:0.6;cursor:wait}
@@ -503,13 +516,23 @@ select.f-input{-webkit-appearance:none;appearance:none;padding-right:2.2rem;back
   <div class="cart-header"><h3>Tu carrito</h3><button class="cart-close" onclick="toggleCart()">✕</button></div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer" id="cartFooter" style="display:none">
-    <div class="cart-total"><span>Total productos</span><strong id="cartTotal">$0</strong></div>
-    <p class="ship-note">🛵 Envío no incluido · se paga aparte</p>
+    <fieldset class="ship-opts" id="shipOpts">
+      <legend>¿Cómo querés recibirlo?</legend>
+      <label class="ship-opt"><input type="radio" name="ship" value="retiro" onchange="setDelivery(this.value)"><span><b>🏠 Retiro en el local</b><small>Sin costo · te avisamos cuando está listo</small></span></label>
+      <label class="ship-opt"><input type="radio" name="ship" value="coordinar" onchange="setDelivery(this.value)"><span><b>🛵 Envío en Mar del Plata</b><small>Por Uber o a coordinar · lo arreglamos por WhatsApp</small></span></label>
+      <label class="ship-opt"><input type="radio" name="ship" value="correo" onchange="setDelivery(this.value)"><span><b>📦 Correo Argentino</b><small>Para el resto del país</small></span></label>
+    </fieldset>
+    <div class="ship-cp" id="shipCpWrap" hidden>
+      <input class="f-input" id="shipCp" type="text" inputmode="numeric" maxlength="4" placeholder="Tu código postal (ej: 5000)" autocomplete="postal-code" oninput="onCpInput()">
+    </div>
+    <div class="cart-total sub"><span>Productos</span><strong id="cartTotal">$0</strong></div>
+    <div class="cart-total sub"><span>Envío</span><strong id="cartShip">Elegí una opción</strong></div>
+    <div class="cart-total"><span>Total</span><strong id="cartGrand">$0</strong></div>
     <div class="buyer-form" id="buyerForm">
       <input class="f-input" id="bName" type="text" placeholder="Tu nombre" autocomplete="name" maxlength="80">
       <input class="f-input" id="bPhone" type="tel" inputmode="tel" placeholder="Tu WhatsApp (ej: 223 555 1234)" autocomplete="tel" maxlength="30">
       <input class="f-input" id="bEmail" type="email" placeholder="Email (opcional)" autocomplete="email" maxlength="120">
-      <p class="buyer-note">Con Mercado Pago pagás <strong>solo los productos</strong>. El envío se paga aparte:<br>📍 <strong>Mar del Plata:</strong> te escribimos por WhatsApp para coordinar el envío (Uber o entrega a coordinar). Si retirás en el local, no tiene costo.<br>📦 <strong>Resto del país:</strong> enviamos por Correo Argentino y te pasamos el costo por WhatsApp.</p>
+      <p class="buyer-note" id="buyerNote"></p>
     </div>
     <div class="pay-options">
       <button class="pay-btn pay-mp" id="payMpBtn" onclick="payMP()">💳 Pagar con Mercado Pago</button>
@@ -864,12 +887,76 @@ function renderCart(){
       </div>
     </div>`).join('');
   document.getElementById('cartTotal').textContent=formatPrice(getTotal());
+  renderShipping();
+}
+
+/* ===== ENTREGA =====
+   Tres opciones; el cliente elige una antes de pagar o pedir.
+   - retiro:    sin costo.
+   - coordinar: Mar del Plata, se arregla por WhatsApp (no suma al total).
+   - correo:    pide código postal. Hasta conectar la cotización de MiCorreo,
+                el costo se informa por WhatsApp. Cuando la cotización esté
+                conectada, quoteShipping() devuelve el monto y se suma al total. */
+const DELIVERY={
+  retiro:{label:'Retiro en el local',ship:'Sin costo',note:'Retirás tu pedido en el local, sin costo de envío.'},
+  coordinar:{label:'Envío en Mar del Plata (a coordinar)',ship:'A coordinar',note:'Con Mercado Pago pagás <strong>solo los productos</strong>. El envío en Mar del Plata (Uber o entrega a coordinar) lo arreglamos por WhatsApp.'},
+  correo:{label:'Correo Argentino',ship:'A cotizar',note:'Con Mercado Pago pagás <strong>solo los productos</strong>. Te pasamos el costo del envío por Correo Argentino por WhatsApp.'}
+};
+const delivery={method:'',cp:'',cost:null};
+function setDelivery(m){
+  if(!DELIVERY[m]) return;
+  delivery.method=m;
+  delivery.cost=null;
+  document.getElementById('shipCpWrap').hidden=m!=='correo';
+  renderShipping();
+  if(m==='correo') document.getElementById('shipCp').focus();
+}
+function onCpInput(){
+  const el=document.getElementById('shipCp');
+  el.value=el.value.replace(/\D/g,'').slice(0,4);
+  delivery.cp=el.value;
+  delivery.cost=null;
+  renderShipping();
+}
+function cpOk(){return /^[1-9]\d{3}$/.test(delivery.cp)}
+function renderShipping(){
+  const d=DELIVERY[delivery.method];
+  const shipEl=document.getElementById('cartShip');
+  let ship='Elegí una opción';
+  if(d){
+    ship=d.ship;
+    if(delivery.method==='correo'){
+      if(!cpOk()) ship='Ingresá tu código postal';
+      else if(delivery.cost!==null) ship=formatPrice(delivery.cost);
+    }
+  }
+  shipEl.textContent=ship;
+  const extra=delivery.method==='correo'&&delivery.cost!==null?delivery.cost:0;
+  document.getElementById('cartGrand').textContent=formatPrice(getTotal()+extra);
+  document.getElementById('buyerNote').innerHTML=d?d.note:'Elegí cómo querés recibir tu pedido para continuar.';
+}
+/* Devuelve true si se puede seguir; si falta algo, avisa y marca el campo. */
+function deliveryReady(){
+  if(!delivery.method){showToast('Elegí cómo querés recibir tu pedido');document.getElementById('shipOpts').scrollIntoView({block:'center'});return false;}
+  if(delivery.method==='correo'&&!cpOk()){showToast('Ingresá tu código postal (4 números)');document.getElementById('shipCp').focus();return false;}
+  return true;
+}
+function deliveryText(){
+  const d=DELIVERY[delivery.method];
+  if(!d) return '';
+  return d.label+(delivery.method==='correo'?' · CP '+delivery.cp:'');
+}
+/* Guarda la elección para que pago.html la incluya en el WhatsApp post-pago. */
+function rememberDelivery(){
+  try{localStorage.setItem('gwg_delivery',JSON.stringify({method:delivery.method,cp:delivery.method==='correo'?delivery.cp:'',t:Date.now()}));}catch(e){}
 }
 function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
 function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();renderCart();}
 function sendWsp(){
+  if(!deliveryReady()) return;
   const lines=cart.map(i=>'• '+i.name+' x'+i.qty+' = '+formatPrice(i.price*i.qty)).join('\n');
-  const msg='Hola Green Witch! Quiero hacer un pedido:\n\n'+lines+'\n\nTotal productos: '+formatPrice(getTotal())+' (sin envío)\n\n¿Cómo coordino el pago y el envío?';
+  const cierre={retiro:'¿Cómo coordino el pago y el retiro?',coordinar:'¿Cómo coordino el pago y el envío?',correo:'¿Me pasás el costo del envío y cómo pago?'}[delivery.method];
+  const msg='Hola Green Witch! Quiero hacer un pedido:\n\n'+lines+'\n\nTotal productos: '+formatPrice(getTotal())+'\nEntrega: '+deliveryText()+'\n\n'+cierre;
   window.open('https://wa.me/5492234239776?text='+encodeURIComponent(msg),'_blank','noopener');
 }
 
@@ -885,6 +972,8 @@ async function payMP(){
   const email=document.getElementById('bEmail').value.trim();
   if(name.length<2){showToast('Ingresá tu nombre');nameEl.focus();return;}
   if(phone.replace(/\D/g,'').length<8){showToast('Ingresá tu WhatsApp para coordinar la entrega');phoneEl.focus();return;}
+  if(!deliveryReady()) return;
+  rememberDelivery();
 
   const btn=document.getElementById('payMpBtn');
   const label=btn.textContent;
