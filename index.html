@@ -997,7 +997,7 @@ async function payMP(){
     const r=await fetch(MP_FN,{
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY},
-      body:JSON.stringify({items:cart.map(i=>({id:i.id,qty:i.qty})),buyer:{name,phone,email}}),
+      body:JSON.stringify({items:cart.map(i=>({id:i.id,qty:i.qty})),buyer:{name,phone,email},delivery:{method:delivery.method,cp:delivery.method==='correo'?delivery.cp:''}}),
       signal:ctrl.signal
     });
     const data=await r.json().catch(()=>({}));

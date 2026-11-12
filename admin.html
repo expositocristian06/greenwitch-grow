@@ -662,6 +662,8 @@ async function optimizeAllImages(){
 
 /* ===== PEDIDOS (solo lectura) ===== */
 const ST_LABEL={paid:'Pagado',pending:'Pendiente',rejected:'Rechazado',cancelled:'Cancelado'};
+/* Entrega elegida por el cliente en el carrito (pedidos viejos no la tienen) */
+const ENTREGA={retiro:'🏠 Retira en el local',coordinar:'🛵 Envío en Mar del Plata (a coordinar)',correo:'📦 Correo Argentino'};
 async function loadOrders(){
   const info=document.getElementById('ordersInfo'),list=document.getElementById('ordersList');
   info.textContent='Cargando...';
@@ -682,6 +684,7 @@ async function loadOrders(){
             <strong style="margin-left:0.6rem">$${Number(o.total).toLocaleString('es-AR')}</strong></div>
         </div>
         <div class="order-items">${(o.order_items||[]).map(i=>esc(i.qty)+' × '+esc(i.name)).join('<br>')}</div>
+        ${ENTREGA[o.delivery_method]?`<div class="order-items" style="color:var(--crema)">${ENTREGA[o.delivery_method]}${o.delivery_method==='correo'&&o.delivery_cp?' · CP <strong>'+esc(o.delivery_cp)+'</strong>':''}</div>`:''}
         <div class="order-items">📱 ${wsp?`<a href="https://wa.me/${wsp}" target="_blank" rel="noopener" style="color:var(--verde-neon)">${esc(o.buyer_phone)}</a>`:'—'}${o.buyer_email?' · ✉️ '+esc(o.buyer_email):''}${o.stock_applied?' · stock descontado':''}</div>
         <div class="order-del"><button type="button" class="edit-btn" data-id="${esc(o.id)}" data-name="${esc(o.buyer_name)}" data-status="${st}" onclick="deleteOrder(this)">🗑 Eliminar pedido</button></div>
       </div>`;
