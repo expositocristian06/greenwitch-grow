@@ -74,7 +74,23 @@ p{font-size:0.92rem;color:var(--texto-muted);line-height:1.75;margin:0 auto 0.8r
   document.getElementById('icon').textContent=e.icon;
   document.getElementById('title').textContent=e.title;
   document.getElementById('msg').textContent=e.msg;
-  document.getElementById('wsp').href='https://wa.me/5492234239776?text='+encodeURIComponent(e.wsp);
+  /* Entrega elegida en el carrito (guardada antes de ir a Mercado Pago).
+     Solo se aceptan los tres valores fijos y un CP de 4 números. */
+  var entrega='';
+  try{
+    var d=JSON.parse(localStorage.getItem('gwg_delivery')||'null');
+    var nombres={retiro:'Retiro en el local',coordinar:'Envío en Mar del Plata (a coordinar)',correo:'Correo Argentino'};
+    if(d&&nombres[d.method]&&Date.now()-Number(d.t)<1000*60*60*48){
+      entrega=nombres[d.method];
+      if(d.method==='correo'&&/^[1-9]\d{3}$/.test(String(d.cp))) entrega+=' · CP '+d.cp;
+    }
+  }catch(err){}
+  var texto=e.wsp+(entrega?'\nEntrega: '+entrega:'');
+  if(entrega&&params.get('estado')==='ok'){
+    var m={'Retiro en el local':'Estamos confirmando tu pago con Mercado Pago. En breve te escribimos por WhatsApp para avisarte cuándo podés pasar a retirar.'};
+    if(m[entrega]) document.getElementById('msg').textContent=m[entrega];
+  }
+  document.getElementById('wsp').href='https://wa.me/5492234239776?text='+encodeURIComponent(texto);
 })();
 </script>
 </body>
