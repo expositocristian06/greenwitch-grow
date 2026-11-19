@@ -104,6 +104,18 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 .login-err{color:#e85555;font-size:0.78rem;min-height:1.2rem;margin-top:0.8rem}
 .logout-btn{background:none;border:1px solid var(--borde);color:var(--texto-muted);padding:0.35rem 0.8rem;font-size:0.7rem;letter-spacing:1px;cursor:pointer;border-radius:2px;font-family:'Inter',sans-serif;margin-left:1rem}
 .logout-btn:hover{border-color:#e85555;color:#e85555}
+.month-box{background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1rem 1.2rem;margin-bottom:1.5rem}
+.month-head{display:flex;flex-wrap:wrap;gap:0.7rem;align-items:center;margin-bottom:0.9rem}
+.month-head strong{color:var(--crema);font-size:0.9rem;margin-right:auto}
+.month-head select{padding:0.45rem 0.7rem;background:var(--negro,#0d0d0d);border:1px solid var(--borde);border-radius:3px;color:var(--crema);font-size:0.8rem;font-family:inherit}
+.month-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0.7rem}
+.month-stats div{border:1px solid var(--borde);border-radius:3px;padding:0.7rem 0.8rem}
+.month-stats span{display:block;font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--texto-muted);margin-bottom:0.3rem}
+.month-stats b{font-size:1.15rem;color:var(--crema)}
+.month-stats .hl{border-color:var(--verde-neon)}
+.month-stats .hl b{color:var(--verde-neon)}
+.month-note{font-size:0.7rem;color:var(--texto-muted);margin-top:0.8rem;line-height:1.5}
+@media(max-width:600px){.month-stats{grid-template-columns:1fr}}
 .order-card{background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:4px;padding:1rem 1.2rem;margin-bottom:0.8rem}
 .order-top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center}
 .order-items{font-size:0.78rem;color:var(--texto-muted);margin-top:0.6rem;line-height:1.6}
@@ -211,6 +223,19 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
 
   <!-- TAB: ORDERS -->
   <div class="tab-content" id="tab-orders">
+    <div class="month-box">
+      <div class="month-head">
+        <strong>Resumen del mes</strong>
+        <select id="monthSel" onchange="loadMonthSummary()"></select>
+        <button type="button" class="edit-btn" id="monthCsv" onclick="downloadMonthCsv()">⬇ Descargar mes</button>
+      </div>
+      <div class="month-stats">
+        <div><span>Ventas web pagadas</span><b id="mTotal">—</b></div>
+        <div><span>Pedidos pagados</span><b id="mCount">—</b></div>
+        <div class="hl"><span>Comisión diseño web (5%)</span><b id="mFee">—</b></div>
+      </div>
+      <p class="month-note">Cuenta solo los pedidos pagados por Mercado Pago en la web, con el envío incluido cuando se cobró en el pago. No incluye ventas en el local.</p>
+    </div>
     <p style="font-size:0.82rem;color:var(--texto-muted);margin-bottom:1.2rem" id="ordersInfo">Cargando...</p>
     <div id="ordersList"></div>
   </div>
@@ -728,7 +753,58 @@ async function optimizeAllImages(){
 const ST_LABEL={paid:'Pagado',pending:'Pendiente',rejected:'Rechazado',cancelled:'Cancelado'};
 /* Entrega elegida por el cliente en el carrito (pedidos viejos no la tienen) */
 const ENTREGA={retiro:'🏠 Retira en el local',coordinar:'🛵 Envío en Mar del Plata (a coordinar)',correo:'📦 Correo Argentino'};
+/* ===== RESUMEN MENSUAL (comisión 5% sobre ventas web pagadas) ===== */
+const COMMISSION=0.05;
+let monthRows=[];
+function fmtMoney(n){return '$'+Math.round(Number(n)||0).toLocaleString('es-AR');}
+function fillMonthSelect(){
+  const sel=document.getElementById('monthSel'); if(sel.options.length) return;
+  const now=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Argentina/Buenos_Aires'}));
+  for(let i=0;i<12;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const v=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const label=d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+    sel.add(new Option(label.charAt(0).toUpperCase()+label.slice(1),v));
+  }
+}
+async function loadMonthSummary(){
+  fillMonthSelect();
+  const [y,m]=document.getElementById('monthSel').value.split('-').map(Number);
+  const from=y+'-'+String(m).padStart(2,'0')+'-01T00:00:00-03:00';
+  const ny=m===12?y+1:y, nm=m===12?1:m+1;
+  const to=ny+'-'+String(nm).padStart(2,'0')+'-01T00:00:00-03:00';
+  ['mTotal','mCount','mFee'].forEach(id=>document.getElementById(id).textContent='…');
+  try{
+    const q='select=id,created_at,paid_at,buyer_name,total,delivery_method,order_items(name,qty)&status=eq.paid'
+      +'&paid_at=gte.'+encodeURIComponent(from)+'&paid_at=lt.'+encodeURIComponent(to)+'&order=paid_at.asc&limit=5000';
+    const r=await authFetch(SB_URL+'/rest/v1/orders?'+q);
+    const rows=await r.json();
+    if(!r.ok||!Array.isArray(rows)) throw new Error('Error');
+    monthRows=rows;
+    const total=rows.reduce((a,o)=>a+(Number(o.total)||0),0);
+    document.getElementById('mTotal').textContent=fmtMoney(total);
+    document.getElementById('mCount').textContent=rows.length;
+    document.getElementById('mFee').textContent=fmtMoney(total*COMMISSION);
+  }catch(e){console.error(e);['mTotal','mCount','mFee'].forEach(id=>document.getElementById(id).textContent='Error');}
+}
+function downloadMonthCsv(){
+  const mes=document.getElementById('monthSel').value;
+  if(!monthRows.length){showToast('No hay ventas pagadas en ese mes');return;}
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const lines=[['Fecha de pago','Cliente','Productos','Entrega','Total','Comision 5%'].map(q).join(';')];
+  let tot=0;
+  monthRows.forEach(o=>{
+    const t=Number(o.total)||0; tot+=t;
+    lines.push([new Date(o.paid_at||o.created_at).toLocaleString('es-AR'),o.buyer_name,(o.order_items||[]).map(i=>i.qty+' x '+i.name).join(' | '),o.delivery_method||'',t.toFixed(2).replace('.',','),(t*COMMISSION).toFixed(2).replace('.',',')].map(q).join(';'));
+  });
+  lines.push(['','','','TOTAL',tot.toFixed(2).replace('.',','),(tot*COMMISSION).toFixed(2).replace('.',',')].map(q).join(';'));
+  const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ventas-web-'+mes+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
 async function loadOrders(){
+  loadMonthSummary();
   const info=document.getElementById('ordersInfo'),list=document.getElementById('ordersList');
   info.textContent='Cargando...';
   try{
