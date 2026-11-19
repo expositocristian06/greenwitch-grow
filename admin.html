@@ -118,6 +118,13 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
   .products-table{font-size:0.75rem}
   .cat-cards{grid-template-columns:1fr 1fr}
 }
+.prod-toolbar{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem;align-items:center}
+.prod-toolbar input,.prod-toolbar select{padding:0.55rem 0.8rem;background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;color:var(--crema);font-size:0.8rem;font-family:inherit}
+.prod-toolbar input{flex:1 1 260px;min-width:0}
+.prod-toolbar input:focus,.prod-toolbar select:focus{outline:none;border-color:var(--verde-neon)}
+.status-toggle{cursor:pointer;border:none;font-family:inherit}
+.status-toggle:hover{filter:brightness(1.25)}
+.status-toggle:disabled{opacity:0.5;cursor:wait}
 </style>
 </head>
 <body>
@@ -156,9 +163,25 @@ body{font-family:'Inter',sans-serif;background:var(--negro);color:var(--texto);m
         <p style="font-size:0.82rem;color:var(--texto-muted)" id="productCount">Cargando...</p>
         <button type="button" class="edit-btn" id="optBtn" onclick="optimizeAllImages()" title="Achica las fotos pesadas para que la tienda y el panel carguen más rápido">⚡ Optimizar fotos</button>
       </div>
-      <select id="filterCategory" onchange="filterProducts()" style="padding:0.5rem 0.8rem;background:var(--verde-oscuro);border:1px solid var(--borde);border-radius:3px;color:var(--crema);font-size:0.78rem;cursor:pointer">
+    </div>
+    <div class="prod-toolbar">
+      <input type="search" id="prodSearch" placeholder="🔍 Buscar por nombre, marca o categoría…" oninput="filterProducts()" autocomplete="off">
+      <select id="filterCategory" onchange="filterProducts()">
         <option value="">Todas las categorías</option>
       </select>
+      <select id="filterStatus" onchange="filterProducts()">
+        <option value="">Todos los estados</option>
+        <option value="active">Solo activos</option>
+        <option value="hidden">Solo ocultos</option>
+        <option value="nostock">Sin stock (0)</option>
+      </select>
+      <select id="sortProducts" onchange="filterProducts()">
+        <option value="name">Orden: A → Z</option>
+        <option value="new">Orden: más nuevos</option>
+        <option value="price_asc">Orden: precio menor</option>
+        <option value="price_desc">Orden: precio mayor</option>
+      </select>
+      <button type="button" class="edit-btn" onclick="clearProdFilters()">Limpiar</button>
     </div>
     <div style="overflow-x:auto">
       <table class="products-table">
@@ -402,28 +425,69 @@ function extractCategories(){
 }
 
 /* ===== PRODUCTS TABLE ===== */
-function renderProducts(filter){
-  const filtered=filter?allProducts.filter(p=>p.category===filter):allProducts;
+/* Buscador + filtros de la lista. El orden por defecto es A→Z para que
+   los productos no "se muevan" al editar. */
+function normTxt(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function renderProducts(){
+  const q=normTxt(document.getElementById('prodSearch').value).trim();
+  const cat=document.getElementById('filterCategory').value;
+  const st=document.getElementById('filterStatus').value;
+  const sort=document.getElementById('sortProducts').value;
+  const words=q?q.split(/\s+/):[];
+  let filtered=allProducts.filter(p=>{
+    if(cat&&p.category!==cat) return false;
+    if(st==='active'&&!p.active) return false;
+    if(st==='hidden'&&p.active) return false;
+    if(st==='nostock'&&Number(p.stock)>0) return false;
+    if(words.length){const hay=normTxt([p.name,p.category,p.tag,p.description].join(' '));if(!words.every(w=>hay.includes(w))) return false;}
+    return true;
+  });
+  const by={
+    name:(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}),
+    new:(a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')),
+    price_asc:(a,b)=>Number(a.price)-Number(b.price),
+    price_desc:(a,b)=>Number(b.price)-Number(a.price)
+  };
+  filtered=filtered.slice().sort(by[sort]||by.name);
   const tbody=document.getElementById('productsBody');
-  tbody.innerHTML=filtered.map(p=>`
+  tbody.innerHTML=filtered.length?filtered.map(p=>`
     <tr>
       <td><div class="product-thumb">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" width="45" height="45">`:esc(p.emoji||'🌿')}</div></td>
       <td style="font-weight:500;color:var(--crema)">${esc(p.name)}</td>
       <td style="font-size:0.75rem;color:var(--texto-muted)">${esc(p.category)}</td>
       <td style="font-weight:600">$${Number(p.price).toLocaleString('es-AR')}</td>
       <td>${esc(p.stock)}</td>
-      <td><span class="status-badge ${p.active?'status-active':'status-inactive'}">${p.active?'Activo':'Oculto'}</span></td>
+      <td><button type="button" class="status-badge status-toggle ${p.active?'status-active':'status-inactive'}" data-id="${esc(p.id)}" onclick="toggleActive(this)" title="${p.active?'Tocá para ocultarlo de la tienda':'Tocá para mostrarlo en la tienda'}">${p.active?'Activo':'Oculto'}</button></td>
       <td style="white-space:nowrap"><button class="edit-btn" onclick="editProduct('${p.id}')">Editar</button> <button class="edit-btn" data-id="${esc(p.id)}" data-active="${p.active?1:0}" onclick="copyProductLink(this)" title="Copiar link para redes">🔗 Link</button></td>
-    </tr>`).join('');
-  document.getElementById('productCount').textContent=filtered.length+' producto'+(filtered.length!==1?'s':'');
-  // Update filter dropdown
+    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--texto-muted)">No hay productos con esos filtros</td></tr>';
+  const total=allProducts.length, n=filtered.length;
+  document.getElementById('productCount').textContent=(n===total?n:n+' de '+total)+' producto'+(total!==1?'s':'');
   const sel=document.getElementById('filterCategory');
-  const current=sel.value;
-  sel.innerHTML='<option value="">Todas las categorías</option>'+categories.map(c=>`<option value="${esc(c)}" ${c===current?'selected':''}>${esc(c)}</option>`).join('');
+  sel.innerHTML='<option value="">Todas las categorías</option>'+categories.map(c=>`<option value="${esc(c)}" ${c===cat?'selected':''}>${esc(c)}</option>`).join('');
 }
 
-function filterProducts(){
-  renderProducts(document.getElementById('filterCategory').value||null);
+function filterProducts(){ renderProducts(); }
+function clearProdFilters(){
+  document.getElementById('prodSearch').value='';
+  document.getElementById('filterCategory').value='';
+  document.getElementById('filterStatus').value='';
+  document.getElementById('sortProducts').value='name';
+  renderProducts();
+}
+
+/* Activar / ocultar con un toque desde la lista */
+async function toggleActive(btn){
+  const p=allProducts.find(x=>x.id===btn.dataset.id); if(!p) return;
+  const next=!p.active;
+  btn.disabled=true;
+  try{
+    const r=await authFetch(SB_API+'?id=eq.'+encodeURIComponent(p.id),{method:'PATCH',headers:{...SB_H,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({active:next})});
+    const rows=await r.json().catch(()=>[]);
+    if(!r.ok||!Array.isArray(rows)||!rows.length) throw new Error('sin permiso');
+    p.active=next;
+    showToast(next?'"'+p.name+'" visible en la tienda ✓':'"'+p.name+'" oculto');
+    renderProducts(); renderCategories();
+  }catch(e){console.error(e);btn.disabled=false;showToast('No se pudo cambiar el estado');}
 }
 
 /* ===== CATEGORIES ===== */
@@ -657,7 +721,7 @@ async function optimizeAllImages(){
   }
   btn.disabled=false;btn.textContent='⚡ Optimizar fotos';
   showToast(changed?('Listo: '+changed+' fotos, '+Math.round(saved/1048576)+' MB menos'+(fails?' · '+fails+' con error':'')):'Las fotos ya estaban livianas ✓');
-  renderProducts(document.getElementById('filterCategory').value||null);
+  renderProducts();
 }
 
 /* ===== PEDIDOS (solo lectura) ===== */
